@@ -1,5 +1,4 @@
 # VRCompanion
-## Description
 This is a utility script for a custom freepie version to enable motion controller and head gesture as well as voice based interactions that can be mapped to keyboard, mouse, or gamepad.
 Source code for the custom freepie version can be found here: https://github.com/Ofisare/FreePIE  
 Current version of script and profiles can be found here: https://github.com/Ofisare/VRCompanion
@@ -32,5 +31,27 @@ For gamepad support using the ViGEm plugin you need to install this first: https
 ## Trouble shooting
 This is a non signed build, you might have to [unblock the dlls](https://discord.com/channels/747967102895390741/1193837770767081492/1206458400960155698).  
 
-## Additional links
+# Poor Mans VR Mod
+As a bonus: this script supports Poor Man's VR.
+Turn any game (that supports reshade) into a limited vr game with free head and controller aiming and z-based stereo view using SuperDepth3D.
+
+## Installation
+ - download and install [reshade with addon support] (https://reshade.me/).
+ - during installation check atleast "Depth3D by BlueSkyDefender" for effects and "Freepie by crosire" for add-ons
+ - copy scripts/reshade/DetachedAiming_pixel.fx to the reshade shader folder of the game
+ - in reshade activate both Depth3D and DetachedAiming (this has to be positioned after Depth3D)
+ - create a profile and set the vrToMouse.Mode to 1 for head aiming, 2 or 3 for left or right controller based aiming or adapt an existing one
+
+I map this often to a gesture to switch ingame between looking around and aiming:
+gestureTracker.grabRight.enabled = True
+gestureTracker.grabRight.action = ModeBasedAction(vrToMouse.mode, [ModeSwitch(vrToMouse.mode, 3), ModeSwitch(vrToMouse.mode, 3), ModeSwitch(vrToMouse.mode, 3), ModeSwitch(vrToMouse.mode, 1)])
+
+Use either virtual desktop or vorpx (or anything else you have) to get it on the screen.
+If you use head lock (virtual desktop) or full vr (vorpx), you might want to set vrToMouse.enableRoll = True.
+I personally play with theater mode.
+It is useful to use a wider screen resolution (vorpx allows to create virtual screens), as it allows further horizontal movement with the controller before seeing some black bars.
+
+Depending on the DirectX Version you might have to check flip pitch and or roll to get the correct movement of the image according to controller movement
+
+# Additional links
 [Discord](https://discord.com/channels/747967102895390741/1193837770767081492/1193837770767081492)
