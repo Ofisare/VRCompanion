@@ -131,36 +131,47 @@ gestureTracker.useRight.action = MultiAction([KeyPress(Key.E), ModeBasedAction(v
 
 # ladder climbing
 climbingTracker = gestureSets.createGestureSet("climbing", weaponInventory)
+#leftPosition = Mode()
+rightPosition = Mode()
 climbingMode = Mode()
 lastMouseMode = Mode()
 climbCounter = Counter(2)
 
 gestureTracker.upperAreaLeft.enabled = True
-gestureTracker.upperAreaLeft.triggerAction = CombinedAction(climbCounter)
-gestureTracker.upperAreaLeft.gripAction = CombinedAction(climbCounter, ActionSplit([ModeSwitch(gestureSets.mode, "climbing"), Action()]))
+gestureTracker.upperAreaLeft.action = CombinedAction(climbCounter)
 gestureTracker.upperAreaLeft.lowerThreshold = 0.0
 gestureTracker.upperAreaLeft.upperThreshold = 0.1
 
-climbingTracker.enter = MultiAction([ModeSwitch(climbingMode, "free"), ModeCopy(lastMouseMode, vrToMouse.mode), ModeSwitch(vrToMouse.mode, VrToMouse_Headset)])
+gestureTracker.upperAreaRight.enabled = True
+gestureTracker.upperAreaRight.action = CombinedAction(climbCounter, ActionSplit([ModeSwitch(gestureSets.mode, "climbing"), Action()]))
+gestureTracker.upperAreaRight.lowerThreshold = 0.0
+gestureTracker.upperAreaRight.upperThreshold = 0.1
+
+climbingTracker.enter = MultiAction([ModeSwitch(climbingMode, "free"), ModeSwitch(leftPosition, "upper"), ModeSwitch(rightPosition, "upper"), ModeCopy(lastMouseMode, vrToMouse.mode), ModeSwitch(vrToMouse.mode, VrToMouse_Headset)])
 climbingTracker.leave = ModeCopy(vrToMouse.mode, lastMouseMode)
 
 climbingTracker.lowerAreaLeft.enabled = True
-climbingTracker.lowerAreaLeft.gripAction = ActionSplit([ModeBasedAction(climbingMode, {"free": ModeSwitch(climbingMode, "leftDown")}), ModeSwitch(climbingMode, "free")])
+climbingTracker.lowerAreaLeft.action = ActionSplit([ModeSwitch(leftPosition, "lower"), Action()])
 climbingTracker.lowerAreaLeft.lowerThreshold = -0.2
 climbingTracker.lowerAreaLeft.upperThreshold = -0.1
-climbingTracker.lowerAreaRight.enabled = True
-climbingTracker.lowerAreaRight.gripAction = ActionSplit([ModeBasedAction(climbingMode, {"free": ModeSwitch(climbingMode, "rightDown")}), ModeSwitch(climbingMode, "free")])
-climbingTracker.lowerAreaRight.lowerThreshold = -0.2
-climbingTracker.lowerAreaRight.upperThreshold = -0.1
-
+    
 climbingTracker.upperAreaLeft.enabled = True
-climbingTracker.upperAreaLeft.gripAction = ActionSplit([ModeBasedAction(climbingMode, {"free": ModeSwitch(climbingMode, "leftUp")}), ModeSwitch(climbingMode, "free")])
+climbingTracker.upperAreaLeft.action = ActionSplit([ModeSwitch(leftPosition, "upper"), Action()])
 climbingTracker.upperAreaLeft.lowerThreshold = 0.0
 climbingTracker.upperAreaLeft.upperThreshold = 0.1
+climbingTracker.gripLeft.enabled = True
+climbingTracker.gripLeft.action = ActionSplit([ModeBasedAction(leftPosition, {"lower": ModeSwitch(climbingMode, "leftDown"), "upper": ModeSwitch(climbingMode, "leftUp")}), ModeSwitch(climbingMode, "free")])
+
+climbingTracker.lowerAreaRight.enabled = True
+climbingTracker.lowerAreaRight.action = ActionSplit([ModeSwitch(rightPosition, "lower"), Action()])
+climbingTracker.lowerAreaRight.lowerThreshold = -0.2
+climbingTracker.lowerAreaRight.upperThreshold = -0.1
 climbingTracker.upperAreaRight.enabled = True
-climbingTracker.upperAreaRight.gripAction = ActionSplit([ModeBasedAction(climbingMode, {"free": ModeSwitch(climbingMode, "rightUp")}), ModeSwitch(climbingMode, "free")])
+climbingTracker.upperAreaRight.action = ActionSplit([ModeSwitch(rightPosition, "upper"), Action()])
 climbingTracker.upperAreaRight.lowerThreshold = 0.0
 climbingTracker.upperAreaRight.upperThreshold = 0.1
+climbingTracker.gripRight.enabled = True
+climbingTracker.gripRight.action = ActionSplit([ModeBasedAction(rightPosition, {"lower": ModeSwitch(climbingMode, "rightDown"), "upper": ModeSwitch(climbingMode, "rightUp")}), ModeSwitch(climbingMode, "free")])
 
 climbingTracker.meleeLeft.enabled = True
 climbingTracker.meleeLeft.action = ModeBasedAction(climbingMode, {"leftUp": KeyPress(Key.W), "leftDown": KeyPress(Key.S)})
