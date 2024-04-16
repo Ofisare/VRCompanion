@@ -119,12 +119,14 @@ float4 PS_CopyFrame(float4 vpos : SV_Position, float2 texcoord : TEXCOORD) : SV_
     float y = forward.y;
     float z = forward.z;
 
+	float ratio = BUFFER_WIDTH / (float)BUFFER_HEIGHT;
+	float3 norm = float3(1, ratio, 1);
     float3x3 rot = float3x3(
         t * x * x + rcos,      t * x * y - rsin * z,  t * x * z + rsin * y,
         t * x * y + rsin * z,  t * y * y + rcos,      t * y * z - rsin * x,
         t * x * z - rsin * y,  t * y * z + rsin * x,  t * z * z + rcos);
-	right = mul(rot, right);
-	up = mul(rot, up);
+	right = mul(rot, right*norm)/norm;
+	up = mul(rot, up*norm)/norm;
 	
 	// intersection ray with plane
 	float denom = dot(forward, ray);

@@ -186,6 +186,7 @@ Each item defines whether to enable triggerRight gesture (first parameter) and r
 The third parameter (optional) defines the haptics in form of a HapticsGroup with the following values: enter, touchEnter, hold, touchHold, leave, touchLeave.
 The forth parameter (optional) gives the item a name, by which to access it.
 Available haptics groups:
+ - Haptics_Melee: Melee feedback when not using the melee gesture 
  - Haptics_Pistol: Single shot with weak feedback
  - Haptics_AutoPistol: Continuous shots with weak feedback
  - Haptics_Rifle: Single shot with medium feedback

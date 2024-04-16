@@ -2301,6 +2301,7 @@ def selectProfile():
     Touch_Melee_Left = TouchHaptics(Touch_Left, touchHapticsPlayer.pulseWithPause(0.4, 1, 0.7))
     Touch_Melee_Right = TouchHaptics(Touch_Right, touchHapticsPlayer.pulseWithPause(0.4, 1, 0.7))
         
+    Haptics_Melee = HapticsGroup(enter = "RecoilMeleeVest_R", touchEnter = Touch_Melee_Right)
     Haptics_Pistol = HapticsGroup(enter = "MinigunVest_R", touchEnter = TouchHaptics(Touch_Right, touchHapticsPlayer.pulse(0.2, 0.5)))
     Haptics_AutoPistol = HapticsGroup(hold = "MinigunVest_R", touchHold = TouchHaptics(Touch_Right, touchHapticsPlayer.pulse(0.2, 0.5)))
     Haptics_Rifle = HapticsGroup(enter = "MinigunVest_R", touchEnter = TouchHaptics(Touch_Right, touchHapticsPlayer.pulse(0.2, 1.0)))
