@@ -268,3 +268,6 @@
 /.vs
 /scripts/vr_companion.json
 /SlimDX.dll
+/Hardcodet.Wpf.TaskbarNotification.dll
+/vJoyInterface.dll
+/vJoyInterfaceWrap.dll

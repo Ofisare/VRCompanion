@@ -2051,7 +2051,6 @@ class TouchHapticsPlayer:
         if len(self._right) > 0:
             right = self._right.pop(0)
             openVR.triggerHapticPulse(1, deltaTime, right.frequency, right.amplitude)
-            diagnostics.watch(len(self._right))
 
     # some patterns
     def pulse(self, length, intensity):
