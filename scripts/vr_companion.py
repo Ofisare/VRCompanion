@@ -2425,7 +2425,9 @@ def selectProfile():
     
     # apply profile    
     diagnostics.watch(profile)
-    with open('scripts/profiles/' + profile + '.py') as f:
+    if not profile.endswith(".py"):
+        profile = 'scripts/profiles/' + profile + '.py'
+    with open(profile) as f:
         exec(f.read())
             
 # initialization of state and constants
