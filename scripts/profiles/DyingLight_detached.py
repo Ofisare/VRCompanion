@@ -63,6 +63,10 @@ gestureTracker.useLeft.action = KeyPress(Key.F)
 gestureTracker.buttonX.enabled = True
 gestureTracker.buttonX.action = TimeBased([KeyPress(Key.F), MousePress(2)])
 
+# Use 2/Menu: Timed Button Y (V/Escape)
+gestureTracker.buttonY.enabled = True
+gestureTracker.buttonY.action = TimeBased([KeyPress(Key.V), KeyPress(Key.Escape)])
+
 # Survivor Sense: Left Trigger near Head (Q)
 gestureTracker.lightLeft.enabled = True
 gestureTracker.lightLeft.triggerAction = KeyPress(Key.Q)
@@ -71,7 +75,7 @@ gestureTracker.lightLeft.triggerAction = KeyPress(Key.Q)
 gestureTracker.triggerRight.enabled = True
 gestureTracker.triggerRight.action = MousePress(0)
 gestureTracker.meleeRight.enabled = True
-gestureTracker.meleeRight.triggerAction = MousePress(0)
+gestureTracker.meleeRight.action = MousePress(0)
 
 # Aim: Left Trigger (Right Mouse Button)
 gestureTracker.triggerLeft.enabled = True
@@ -98,16 +102,7 @@ gestureTracker.holsterInventoryLeft.gripAction = KeyPress(Key.D5)
 # Inventory/Map: Right Trigger/Grip near Head (I/ M)
 gestureTracker.lightRight.enabled = True
 gestureTracker.lightRight.triggerAction = KeyPress(Key.I)
-gestureTracker.lightRight.gripAction = KeyPress(Key.M)
-
-# Additionals
-# Menu/: Button Y (Escape)
-gestureTracker.buttonY.enabled = True
-gestureTracker.buttonY.action = KeyPress(Key.Escape)
-
-# Reset VD Orientation: button Right Stick (Left Alt + Space)
-gestureTracker.buttonRightStick.enabled = True
-gestureTracker.buttonRightStick.action = KeyPress(Key.F4)
+gestureTracker.lightRight.gripAction = KeyPress([Key.M, Key.N])
 
 # Weapon Inventory (for haptics feedback)
 weaponInventory.current = 1
@@ -140,3 +135,8 @@ gestureTracker.shoulderInventoryRight.triggerAction = MultiAction([KeyPress(Key.
 # Weapon 4: Right Grip near Left Shoulder Holster (4)
 gestureTracker.shoulderWeaponLeft.enabled = True
 gestureTracker.shoulderWeaponLeft.gripAction = MultiAction([KeyPress(Key.D4), InventorySelect(weaponInventory, 4)])
+
+
+# Reset VD Orientation/Head Lock: timed button Right Stick (F4/F5)
+gestureTracker.buttonRightStick.enabled = True
+gestureTracker.buttonRightStick.action = TimeBased([KeyPress(Key.F4), KeyPress(Key.F5)])

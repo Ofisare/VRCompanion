@@ -1548,6 +1548,8 @@ class GestureTracker:
         self.enter = None
         self.leave = None
         
+        self._inventory = inventory
+        
         self.aimPistol = Gesture(0.02, 0.03)                            # distance between both controllers
         self.aimRifleLeft = Gesture(-0.2, -0.1)                         # negative distance between left controller and head in xz plane
         self.aimRifleRight = Gesture(-0.2, -0.1)                        # negative distance between right controller and head in xz plane
@@ -1732,6 +1734,8 @@ class GestureTracker:
         rightValidation = GestureValidation(openVR.rightTrigger, openVR.rightGrip)
         noneValidation = GestureValidation(1,1)
         
+        item = self._inventory.get()
+        
         if self.lowerAreaLeft.enabled:
             self.lowerAreaLeft.update(currentTime, openVR.leftTouchPose.position.y - openVR.headPose.position.y, leftValidation)
         
@@ -1910,29 +1914,30 @@ class GestureTracker:
         else:
             self.meleeLeftAltPull.update(currentTime, 0, leftValidation)
                 
-        # right melee
+        # right melee       
         # calculate speed from right controller
         dx = openVR.rightTouchPose.position.x - rightController.x
         dy = openVR.rightTouchPose.position.y - rightController.y
         dz = openVR.rightTouchPose.position.z - rightController.z
         d = (dx*dx + dy*dy + dz*dz) / (deltaTime * deltaTime)
         rightMeleeAction = -1
-        
-        # use right melee as fallback if available
-        if self.meleeRight.enabled:
-            rightMeleeAction = 0
-        # check for alt melee gestures
-        if openVR.rightTouchPose.forward.y < self.rightMeleeAltThreshold:
-            dot = dotProduct(openVR.rightTouchPose.left, openVR.headPose.forward)
-            # check for force push
-            if self.meleeRightAltPush.enabled and dot < -0.5:
-                rightMeleeAction = 2
-            # check for force pull
-            elif self.meleeRightAltPull.enabled and dot > 0.5:
-                rightMeleeAction = 3
-            # use left melee alt as fallback
-            elif self.meleeRightAlt.enabled:
-                rightMeleeAction = 1
+                
+        if item.trackMeleeRight: 
+            # use right melee as fallback if available
+            if self.meleeRight.enabled:
+                rightMeleeAction = 0
+            # check for alt melee gestures
+            if openVR.rightTouchPose.forward.y < self.rightMeleeAltThreshold:
+                dot = dotProduct(openVR.rightTouchPose.left, openVR.headPose.forward)
+                # check for force push
+                if self.meleeRightAltPush.enabled and dot < -0.5:
+                    rightMeleeAction = 2
+                # check for force pull
+                elif self.meleeRightAltPull.enabled and dot > 0.5:
+                    rightMeleeAction = 3
+                # use left melee alt as fallback
+                elif self.meleeRightAlt.enabled:
+                    rightMeleeAction = 1
         
         if rightMeleeAction == 0:
             self.meleeRight.update(currentTime, -d, rightValidation)
@@ -1959,7 +1964,10 @@ class GestureTracker:
             self.triggerLeft.update(currentTime, -openVR.leftTrigger, leftValidation)
             
         if self.triggerRight.enabled:
-            self.triggerRight.update(currentTime, -openVR.rightTrigger, rightValidation)
+            if item.trackFireWeapon:
+                self.triggerRight.update(currentTime, -openVR.rightTrigger, rightValidation)
+            else:
+                self.triggerRight.update(currentTime, 0, rightValidation)
                         
         if self.gripLeft.enabled:
             self.gripLeft.update(currentTime, -openVR.leftGrip, leftValidation)
