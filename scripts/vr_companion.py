@@ -87,12 +87,20 @@
 import time
 import math
 import sys
+import json
 
 try:
     from bhaptics import HapticPlayer
     skipBhaptics = False
 except ImportError:
     skipBhaptics = True
+    pass
+
+try:
+    from ofisare import AutoUpdater
+    skipUpdate = False
+except ImportError:
+    skipUdate = True
     pass
 
 #*********************
@@ -2167,15 +2175,18 @@ import clr
 clr.AddReference('System.Windows.Forms')
 from System.Windows.Forms import Application, Form, Label, ComboBox, ComboBoxStyle, DockStyle, Button, FormBorderStyle, FormStartPosition
 class SettingsForm(Form):
-    def __init__(self):
+    def __init__(self, settings):
         self.Text = 'VR Companion Settings'
         self.Name = 'VR Companion Settings'
+        self.ControlBox = False
+           
+        self.settings = settings
         
         self.FormBorderStyle = FormBorderStyle.FixedDialog;
         self.MaximizeBox = False;
         self.MinimizeBox = False;
         self.StartPosition = FormStartPosition.CenterScreen;
-        self.Height = 128
+        self.Height = 256
         
         profileLabel = Label()
         profileLabel.Text = "Profile"
@@ -2187,18 +2198,53 @@ class SettingsForm(Form):
         	self.profileCombo.Items.Add(profile.replace("scripts\profiles\\", "").replace(".py", ""))        
         self.profileCombo.Dock = DockStyle.Top
         self.profileCombo.DropDownStyle = ComboBoxStyle.DropDownList        
+                
+        self.startButton = Button()
+        self.startButton.Text = "Start"
+        self.startButton.Dock = DockStyle.Top
+        self.startButton.Click += self.buttonPressed
         
-        button = Button()
-        button.Text = "Start"
-        button.Dock = DockStyle.Top
-        button.Click += self.buttonPressed
+        if skipUpdate == False:            
+            self.updater = AutoUpdater()
         
-        self.Controls.Add(button)
+            separator = Label()
+            separator.Dock = DockStyle.Top
+                    
+            self.updateButton = Button()
+            self.updateButton.Text = "Update"
+            self.updateButton.Dock = DockStyle.Top
+            self.updateButton.Click += self.updatePressed
+            self.updateButton.Enabled = self.updater.updatePath != None and (not "lastUpdate" in self.settings or self.settings["lastUpdate"] != self.updater.updatePath)
+                        
+            self.updateLabel = Label()
+            self.updateLabel.Dock = DockStyle.Top
+            if self.updater.updatePath != None:
+                self.updateLabel.Text = self.updater.updatePath.split('/')[-1]
+            
+            self.Controls.Add(self.updateLabel)
+            self.Controls.Add(self.updateButton)
+            self.Controls.Add(separator)
+            
+        self.Controls.Add(self.startButton)
         self.Controls.Add(self.profileCombo)
-        self.Controls.Add(profileLabel)
+        self.Controls.Add(profileLabel)        
     
     def buttonPressed(self, sender, args):
     	self.Close()
+    	
+    def updatePressed(self, sender, args):
+        self.startButton.Enabled = False
+        self.updateButton.Enabled = False
+        
+        success, exception = self.updater.perform_update()
+        if success:
+            self.settings["lastUpdate"] = self.updater.updatePath
+            with open('scripts/vr_companion.json', "w") as settingsFile:
+                settingsFile.write(json.dumps(self.settings))
+    
+            self.updateLabel.Text = "Update performed, stop and restart FreePIE"
+        else:
+            self.updateLabel.Text = str(exception)
 
 # a function to predefine settings for different games
 def selectProfile():
@@ -2393,19 +2439,23 @@ def selectProfile():
     showDialog = (profile == None)
        
     # load settings
-    import json
+    settings = {}         
     try:
 	    with open('scripts/vr_companion.json') as settingsFile:
 	        settings = json.loads(settingsFile.read())
 	        if settings != None:
-	        	if profile == None:
-	        		profile = settings["profile"]
+	        	if profile == None and "profile" in settings:
+	        		profile = settings["profile"]         
     except:
         if profile == None:
             profile = "WASD_Default"
     
+    # if loading failed, reinitialize settings
+    if settings == None:
+        settings = {}
+    
     if showDialog:
-        form = SettingsForm()
+        form = SettingsForm(settings)
         
         # set current settings
         form.profileCombo.SelectedItem = profile
@@ -2417,7 +2467,6 @@ def selectProfile():
         profile = form.profileCombo.SelectedItem
     
         # save settings
-        settings = {}
         settings["profile"] = profile
         with open('scripts/vr_companion.json', "w") as settingsFile:
             settingsFile.write(json.dumps(settings))        
