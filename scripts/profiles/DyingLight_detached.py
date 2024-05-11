@@ -47,7 +47,7 @@ vrToMouse.stickMultiplierY = 0.5
 vrToMouse.enableRoll.current = True
 
 gestureTracker.grabRight.enabled = True
-gestureTracker.grabRight.action = ModeSwitchWithReset(vrToMouse.mode, VrToMouse_Right, VrToMouse_Headset)
+gestureTracker.grabRight.action = ModeBasedAction(vrToMouse.mode, {VrToMouse_Headset: ModeSwitch(vrToMouse.mode, VrToMouse_Right)}, ModeSwitch(vrToMouse.mode, VrToMouse_Headset))
 
 # Actions
 # Use Equipment: Left Melee Gesture while holding Trigger + X Long Press (Middle Mouse Button)
@@ -106,12 +106,12 @@ gestureTracker.lightRight.gripAction = KeyPress([Key.M, Key.N])
 
 # Weapon Inventory (for haptics feedback)
 weaponInventory.current = 1
-weaponInventory.set(1, Item(True, True, Haptics_Melee, "Melee"))
-weaponInventory.set(2, Item(True, True, Haptics_Melee, "Melee"))
-weaponInventory.set(3, Item(True, True, Haptics_Melee, "Melee"))
-weaponInventory.set(4, Item(True, True, Haptics_Melee, "Melee"))
+weaponInventory.set(1, Item(False, True, Haptics_Melee, "Melee"))
+weaponInventory.set(2, Item(False, True, Haptics_Melee, "Melee"))
+weaponInventory.set(3, Item(False, True, Haptics_Melee, "Melee"))
+weaponInventory.set(4, Item(False, True, Haptics_Melee, "Melee"))
 
-v2k.addCommand("Melee", InventoryReplace(weaponInventory, Item(True, True, Haptics_Melee)))
+v2k.addCommand("Melee", InventoryReplace(weaponInventory, Item(False, True, Haptics_Melee)))
 v2k.addCommand("Pistol", InventoryReplace(weaponInventory, Item(True, False, Haptics_Pistol)))
 v2k.addCommand("Shotgun", InventoryReplace(weaponInventory, Item(True, False, Haptics_Shotgun)))
 v2k.addCommand("Rifle", InventoryReplace(weaponInventory, Item(True, False, Haptics_AutoRifle)))
@@ -119,6 +119,8 @@ v2k.addCommand("Rifle", InventoryReplace(weaponInventory, Item(True, False, Hapt
 # Weapon 1: Right Grip near Right Hip Holster (1)
 gestureTracker.holsterWeaponRight.enabled = True
 gestureTracker.holsterWeaponRight.gripAction = MultiAction([KeyPress(Key.D1), InventorySelect(weaponInventory, 1)])
+# Shortcut Weapon 4: Right Trigger near Right Hip Holster (4)
+gestureTracker.holsterWeaponRight.triggerAction = MultiAction([KeyPress(Key.D4), InventorySelect(weaponInventory, 4)])
 
 # Weapon 2: Grip near Right Shoulder Holster (2)
 gestureTracker.shoulderWeaponRight.enabled = True
@@ -135,6 +137,6 @@ gestureTracker.shoulderWeaponLeft.enabled = True
 gestureTracker.shoulderWeaponLeft.gripAction = MultiAction([KeyPress(Key.D4), InventorySelect(weaponInventory, 4)])
 
 
-# Head Lock/Reset VD Orientation: timed button Right Stick (F5/F4)
+# Reset VD Orientation/Head Lock: timed button Right Stick (F4/F5)
 gestureTracker.buttonRightStick.enabled = True
-gestureTracker.buttonRightStick.action = TimeBased([KeyPress(Key.F5), KeyPress(Key.F4)])
+gestureTracker.buttonRightStick.action = TimeBased([KeyPress(Key.F4), KeyPress(Key.F5)])
