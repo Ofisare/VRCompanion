@@ -88,6 +88,7 @@ import time
 import math
 import sys
 import json
+import os
 
 try:
     from bhaptics import HapticPlayer
@@ -1930,7 +1931,7 @@ class GestureTracker:
         d = (dx*dx + dy*dy + dz*dz) / (deltaTime * deltaTime)
         rightMeleeAction = -1
                 
-        if item.trackMeleeRight: 
+        if item == None or item.trackMeleeRight: 
             # use right melee as fallback if available
             if self.meleeRight.enabled:
                 rightMeleeAction = 0
@@ -1972,7 +1973,7 @@ class GestureTracker:
             self.triggerLeft.update(currentTime, -openVR.leftTrigger, leftValidation)
             
         if self.triggerRight.enabled:
-            if item.trackFireWeapon:
+            if item == None or item.trackFireWeapon:
                 self.triggerRight.update(currentTime, -openVR.rightTrigger, rightValidation)
             else:
                 self.triggerRight.update(currentTime, 0, rightValidation)
@@ -2194,8 +2195,11 @@ class SettingsForm(Form):
         
         self.profileCombo = ComboBox()
         import glob
-        for profile in glob.glob("scripts\profiles\*.py"):
-        	self.profileCombo.Items.Add(profile.replace("scripts\profiles\\", "").replace(".py", ""))        
+        officialFiles = [file.replace("scripts\profiles\\", "") for file in glob.glob("scripts\profiles\*.py")]
+        userFiles = [file.replace("scripts\user_profiles\\", "") for file in glob.glob("scripts\user_profiles\*.py")]
+        files = sorted(set(officialFiles + userFiles))
+        for profile in files:
+        	self.profileCombo.Items.Add(profile.replace(".py", ""))        
         self.profileCombo.Dock = DockStyle.Top
         self.profileCombo.DropDownStyle = ComboBoxStyle.DropDownList        
                 
@@ -2474,7 +2478,10 @@ def selectProfile():
     # apply profile    
     diagnostics.watch(profile)
     if not profile.endswith(".py"):
-        profile = 'scripts/profiles/' + profile + '.py'
+        if os.path.exists("scripts/user_profiles/" + profile + ".py"):
+            profile = 'scripts/user_profiles/' + profile + '.py'
+        else:
+            profile = 'scripts/profiles/' + profile + '.py'
     with open(profile) as f:
         exec(f.read())
             

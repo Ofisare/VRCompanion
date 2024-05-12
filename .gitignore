@@ -271,3 +271,4 @@
 /Hardcodet.Wpf.TaskbarNotification.dll
 /vJoyInterface.dll
 /vJoyInterfaceWrap.dll
+/scripts/user_profiles/*.py
