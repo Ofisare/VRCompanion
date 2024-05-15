@@ -2176,7 +2176,7 @@ def update():
 
 import clr
 clr.AddReference('System.Windows.Forms')
-from System.Windows.Forms import Application, Form, Label, ComboBox, ComboBoxStyle, DockStyle, Button, FormBorderStyle, FormStartPosition
+from System.Windows.Forms import Application, Form, Label, ComboBox, ComboBoxStyle, DockStyle, Button, FormBorderStyle, FormStartPosition, NumericUpDown
 class SettingsForm(Form):
     def __init__(self, settings):
         self.Text = 'VR Companion Settings'
@@ -2184,12 +2184,25 @@ class SettingsForm(Form):
         self.ControlBox = False
            
         self.settings = settings
+        refreshRate = 60
+        if "refreshRate" in settings:
+            refreshRate = int(settings["refreshRate"])
         
         self.FormBorderStyle = FormBorderStyle.FixedDialog;
         self.MaximizeBox = False;
         self.MinimizeBox = False;
         self.StartPosition = FormStartPosition.CenterScreen;
         self.Height = 256
+        
+        refreshLabel = Label()
+        refreshLabel.Text = "Refresh Rate (FPS)"
+        refreshLabel.Dock = DockStyle.Top
+        
+        self.refreshRate = NumericUpDown()
+        self.refreshRate.Minimum = 20
+        self.refreshRate.Maximum = 360
+        self.refreshRate.Value = refreshRate
+        self.refreshRate.Dock = DockStyle.Top
         
         profileLabel = Label()
         profileLabel.Text = "Profile"
@@ -2234,6 +2247,8 @@ class SettingsForm(Form):
         self.Controls.Add(self.startButton)
         self.Controls.Add(self.profileCombo)
         self.Controls.Add(profileLabel)        
+        self.Controls.Add(self.refreshRate)   
+        self.Controls.Add(refreshLabel)
     
     def buttonPressed(self, sender, args):
     	self.Close()
@@ -2262,6 +2277,7 @@ def selectProfile():
     global vrToMouse
     global vrToGamepad
     global profile
+    global UpdateFrequency
 
     # gestureTracker handles all controller based gestures (see test profile which has all of them bound to a key and enabled)
     # each gesture
@@ -2445,13 +2461,16 @@ def selectProfile():
     showDialog = (profile == None)
        
     # load settings
-    settings = {}         
+    settings = {}
+    refreshRate = 60
     try:
 	    with open('scripts/vr_companion.json') as settingsFile:
 	        settings = json.loads(settingsFile.read())
 	        if settings != None:
 	        	if profile == None and "profile" in settings:
-	        		profile = settings["profile"]         
+	        		profile = settings["profile"]
+                if "refreshRate" in settings:
+                    refreshRate = int(settings["refreshRate"])
     except:
         if profile == None:
             profile = "WASD_Default"
@@ -2471,14 +2490,18 @@ def selectProfile():
         
         # get current settings
         profile = form.profileCombo.SelectedItem
+        refreshRate = int(form.refreshRate.Value)
     
         # save settings
         settings["profile"] = profile
+        settings["refreshRate"] = refreshRate
         with open('scripts/vr_companion.json', "w") as settingsFile:
             settingsFile.write(json.dumps(settings))        
     
-    # apply profile    
+    # apply profile and refresh rate
     diagnostics.watch(profile)
+    diagnostics.watch(refreshRate)
+    UpdateFrequency = 1.0 / refreshRate
     if not profile.endswith(".py"):
         if os.path.exists("scripts/user_profiles/" + profile + ".py"):
             profile = 'scripts/user_profiles/' + profile + '.py'
