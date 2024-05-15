@@ -114,7 +114,7 @@ class Vector:
         self.z = z
 
 def getYawPitch(pose):
-    yaw = math.atan2(pose.forward.z, pose.forward.x)
+    yaw = math.atan2(pose.left.z, pose.left.x)
     pitch = math.asin(pose.forward.y)
     
     return yaw, pitch
@@ -125,6 +125,8 @@ def getYawPitchRoll(pose):
     planeRightX = math.sin(yaw);
     planeRightZ = -math.cos(yaw);
     roll = math.asin(max(-1, min(1, pose.up.x * planeRightX + pose.up.z * planeRightZ)))    
+    # now get more secure yaw
+    yaw = math.atan2(pose.left.z, pose.left.x)
     return yaw, pitch, roll
 
 def getRoll(pose):
