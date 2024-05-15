@@ -1,23 +1,15 @@
 # aiming
-action = MultiAction([MousePress(1), ModeSwitchWithReset(vrToMouse.mode, 2, 1)])
-gestureTracker.aimRifleLeft.enabled = True
-gestureTracker.aimRifleLeft.action = ModeBasedAction(vrToMouse.mode, [Action(), action, action, Action()])
-action = MultiAction([MousePress(1), ModeSwitchWithReset(vrToMouse.mode, 3, 1)])
-gestureTracker.aimRifleRight.enabled = True
-gestureTracker.aimRifleRight.action = ModeBasedAction(vrToMouse.mode, [Action(), action, Action(), action])		
 gestureTracker.buttonRightStick.enabled = True
-gestureTracker.buttonRightStick.action = ModeBasedAction(vrToMouse.mode, [ModeSwitch(vrToMouse.mode, 1), ModeSwitch(vrToMouse.mode, 0), ModeSwitch(vrToMouse.mode, 1), ModeSwitch(vrToMouse.mode, 1)])
+gestureTracker.buttonRightStick.action = ModeBasedAction(vrToMouse.mode, {VrToMouse_Headset: ModeSwitch(vrToMouse.mode, VrToMouse_Right)}, ModeSwitch(vrToMouse.mode, VrToMouse_Headset))
 		
 # attack
 gestureTracker.fireWeaponRight.enabled = True
 gestureTracker.fireWeaponRight.action = MousePress(0)	
 
 gestureTracker.meleeLeft.enabled = True
-gestureTracker.meleeLeft.action = KeyPress(Key.M)
-gestureTracker.meleeLeft.validationMode = GestureValidation_Grip
+gestureTracker.meleeLeft.gripAction = KeyPress(Key.M)
 gestureTracker.meleeRight.enabled = True
-gestureTracker.meleeRight.action = KeyPress(Key.M)
-gestureTracker.meleeRight.validationMode = GestureValidation_Grip
+gestureTracker.meleeRight.gripAction = KeyPress(Key.M)
 
 # movement
 gestureTracker.buttonLeftStickUp.enabled = True
@@ -53,37 +45,27 @@ gestureTracker.leanRight.action = KeyPress(Key.E)
 
 # inventory		
 gestureTracker.lightLeft.enabled = True
-gestureTracker.lightLeft.action = KeyPress(Key.G)	
-gestureTracker.lightLeft.validationMode = GestureValidation_Trigger
+gestureTracker.lightLeft.triggerAction = KeyPress(Key.G)	
 gestureTracker.lightRight.enabled = True
-gestureTracker.lightRight.action = KeyPress(Key.F)
-gestureTracker.lightRight.validationMode = GestureValidation_Trigger
+gestureTracker.lightRight.triggerAction = KeyPress(Key.F)
 
 gestureTracker.holsterWeaponLeft.enabled = True
-gestureTracker.holsterWeaponLeft.action = KeyPress(Key.D1)
-gestureTracker.holsterWeaponLeft.validationMode = GestureValidation_Trigger
+gestureTracker.holsterWeaponLeft.gripAction = KeyPress(Key.D1)
 gestureTracker.holsterWeaponRight.enabled = True
-gestureTracker.holsterWeaponRight.action = KeyPress(Key.D2)	
-gestureTracker.holsterWeaponRight.validationMode = GestureValidation_Trigger			
+gestureTracker.holsterWeaponRight.gripAction = KeyPress(Key.D2)		
 gestureTracker.shoulderWeaponLeft.enabled = True
-gestureTracker.shoulderWeaponLeft.action = KeyPress(Key.D3)
-gestureTracker.shoulderWeaponLeft.validationMode = GestureValidation_Trigger
+gestureTracker.shoulderWeaponLeft.gripAction = KeyPress(Key.D3)
 gestureTracker.shoulderWeaponRight.enabled = True
-gestureTracker.shoulderWeaponRight.action = KeyPress(Key.D4)		
-gestureTracker.shoulderWeaponRight.validationMode = GestureValidation_Trigger
+gestureTracker.shoulderWeaponRight.gripAction = KeyPress(Key.D4)		
 
 gestureTracker.holsterInventoryLeft.enabled = True
-gestureTracker.holsterInventoryLeft.action = KeyPress(Key.D5)	
-gestureTracker.holsterInventoryLeft.validationMode = GestureValidation_Grip	
+gestureTracker.holsterInventoryLeft.gripAction = KeyPress(Key.D5)
 gestureTracker.holsterInventoryRight.enabled = True
-gestureTracker.holsterInventoryRight.action = KeyPress(Key.D6)
-gestureTracker.holsterInventoryRight.validationMode = GestureValidation_Grip
+gestureTracker.holsterInventoryRight.gripAction = KeyPress(Key.D6)
 gestureTracker.shoulderInventoryLeft.enabled = True
-gestureTracker.shoulderInventoryLeft.action = KeyPress(Key.D7)		
-gestureTracker.shoulderInventoryLeft.validationMode = GestureValidation_Grip
+gestureTracker.shoulderInventoryLeft.gripAction = KeyPress(Key.D7)		
 gestureTracker.shoulderInventoryRight.enabled = True
-gestureTracker.shoulderInventoryRight.action = KeyPress(Key.D8)
-gestureTracker.shoulderInventoryRight.validationMode = GestureValidation_Grip
+gestureTracker.shoulderInventoryRight.gripAction = KeyPress(Key.D8)
 		
 # interacion
 gestureTracker.useLeft.enabled = True
