@@ -2360,6 +2360,9 @@ def selectProfile():
     VrToMouse_Right = 3
     VrToMouse_StickOnly = 4
     
+    # possible openXR interaction settings
+    OpenXR_All = 1
+    
     # possible validation modes
     GestureValidation_None = 0
     GestureValidation_Delay = 1
@@ -2497,7 +2500,7 @@ def selectProfile():
         settings["refreshRate"] = refreshRate
         with open('scripts/vr_companion.json', "w") as settingsFile:
             settingsFile.write(json.dumps(settings))        
-    
+        
     # apply profile and refresh rate
     diagnostics.watch(profile)
     diagnostics.watch(refreshRate)
