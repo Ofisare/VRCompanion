@@ -47,7 +47,7 @@ Turn any game (that supports reshade) into a limited vr game with free head and 
 
 I map this often to a gesture to switch ingame between looking around and aiming:
 gestureTracker.grabRight.enabled = True
-gestureTracker.grabRight.action = ModeBasedAction(vrToMouse.mode, {VrToMouse_Right: ModeSwitch(vrToMouse.mode, 3)}, ModeSwitch(vrToMouse.mode, VrToMouse_Headset)])
+gestureTracker.grabRight.action = ModeBasedAction(vrToMouse.mode, {VrToMouse_Headset: ModeSwitch(vrToMouse.mode, VrToMouse_Right)}, ModeSwitch(vrToMouse.mode, VrToMouse_Headset)])
 or
 gestureTracker.grabRight.action = ModeSwitchWithReset(vrToMouse.mode, VrToMouse_Right, VrToMouse_Headset)
 
