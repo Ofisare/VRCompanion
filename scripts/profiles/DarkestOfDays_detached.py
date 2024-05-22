@@ -26,7 +26,9 @@ gestureTracker.buttonRightStick.enabled = True
 gestureTracker.buttonRightStick.action = ModeBasedAction(vrToMouse.mode, [ModeSwitch(vrToMouse.mode, 1), ModeSwitch(vrToMouse.mode, 0), ModeSwitch(vrToMouse.mode, 1), ModeSwitch(vrToMouse.mode, 1)])
 
 gestureTracker.grabRight.enabled = True
-gestureTracker.grabRight.action = ModeBasedAction(vrToMouse.mode, [ModeSwitch(vrToMouse.mode, 3), ModeSwitch(vrToMouse.mode, 3), ModeSwitch(vrToMouse.mode, 3), ModeSwitch(vrToMouse.mode, 1)])
+#gestureTracker.grabRight.action = ModeBasedAction(vrToMouse.mode, {VrToMouse_Right: ModeSwitch(vrToMouse.mode, VrToMouse_Headset}, ModeSwitch(vrToMouse.mode, VrToMouse_Right))
+gestureTracker.grabRight.action = ModeSwitchWithReset(vrToMouse.mode, VrToMouse_Right, VrToMouse_Headset)
+vrToMouse.enableRoll.current = 1
 
 gestureTracker.buttonLeftStick.enabled = True
 gestureTracker.buttonLeftStick.action = KeyPress([Key.Space, Key.LeftAlt])

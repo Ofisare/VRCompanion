@@ -147,13 +147,13 @@ class VRToMouse:
                 yaw = yaw + math.pi * 2
         
             environment.freePieIO[0].yaw = yaw
-            environment.freePieIO[0].pitch = pitchHead - self._pitch
+            environment.freePieIO[0].pitch = self._pitch - pitchHead
         else:
             environment.freePieIO[0].yaw = 0
             environment.freePieIO[0].pitch = 0
             
         if self.enableRoll.current:
-            environment.freePieIO[0].roll = rollHead
+            environment.freePieIO[0].roll = -rollHead
         else:
             environment.freePieIO[0].roll = 0
 

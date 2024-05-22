@@ -291,10 +291,10 @@ class GestureTracker:
         # head based lean support
         roll = getRoll(environment.openVR.headPose)
         if self.leanLeft.enabled:
-            self.leanLeft.update(currentTime, roll - rollCenter, noneValidation)
+            self.leanLeft.update(currentTime, roll - environment.rollCenter, noneValidation)
         
         if self.leanRight.enabled:
-            self.leanRight.update(currentTime, rollCenter - roll, noneValidation)
+            self.leanRight.update(currentTime, environment.rollCenter - roll, noneValidation)
 
         # left hand based use
         if self.useLeft.enabled:

@@ -134,6 +134,7 @@ def reset():
     global v2k
     global vrToMouse
     global vrToGamepad
+    global vrToKeyboard
 
     # recenter the device
     openVR.center()
@@ -158,6 +159,7 @@ def reset():
     v2k.reset()
     vrToMouse.reset()
     vrToGamepad.reset()
+    vrToKeyboard.reset()
 
 # getting new information from device
 def update():
@@ -169,6 +171,7 @@ def update():
     global v2k
     global vrToMouse
     global vrToGamepad
+    global vrToKeyboard
     
     # check interval
     currentTime = time.clock()
@@ -182,11 +185,10 @@ def update():
     # check voice commands
     v2k.update(currentTime) 
     
-    # check vr mouse movement
+    # check vr updates
     vrToMouse.update(currentTime, deltaTime)
-    
-    # check vr gamepad interaction
-    vrToGamepad.update(currentTime)
+    vrToGamepad.update(currentTime, deltaTime)
+    vrToKeyboard.update(currentTime, deltaTime)
     
     # perform touch haptics
     touchHapticsPlayer.update(deltaTime)
@@ -306,6 +308,7 @@ def selectProfile():
     global touchHapticsPlayer
     global vrToMouse
     global vrToGamepad
+    global vrToKeyboard
     global profile
     
     # load settings
@@ -562,9 +565,11 @@ if starting:
     # initialize vr to mouse and gamepad
     vrToMouse = VRToMouse()
     vrToGamepad = VRToGamepad()
+    vrToKeyboard = VRToKeyboard()
     
     environment.vrToMouse = vrToMouse
     environment.vrToGamepad = vrToGamepad
+    environment.vrToKeyboard = vrToKeyboard
     environment.hapticPlayer = hapticPlayer
     environment.touchHapticsPlayer = touchHapticsPlayer
             

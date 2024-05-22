@@ -29,7 +29,7 @@ class VRToGamepad:
         self.controller = controllerType
         environment.vigem.CreateController(self.controller)
 
-    def update(self, currentTime):
+    def update(self, currentTime, deltaTime):
         # map left trigger to left trigger
         if self.leftTriggerMode == 1:
             environment.vigem.SetTrigger(self.controller, environment.VigemSide.Left, environment.openVR.leftTrigger)

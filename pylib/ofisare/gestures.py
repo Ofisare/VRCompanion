@@ -74,7 +74,7 @@ class Gesture:
         if environment.hapticPlayer != None and haptics != None:
             environment.hapticPlayer.play_registered(currentTime, haptics)
         
-        if environment.touchHaptics != None:
+        if environment.touchHapticsPlayer != None and touchHaptics != None:
             environment.touchHapticsPlayer.play(touchHaptics)
    
     def _updateBaseGesture(self, currentTime, value, gestureValidation, haptics):

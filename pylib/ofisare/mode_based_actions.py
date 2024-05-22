@@ -20,7 +20,6 @@ class ModeBasedAction(Action):
             self._actions = actions
         self._defaultAction = defaultAction
         self._activeMode = mode.current
-        self._needUpdate = False
         
     def getCurrentAction(self):
     	return self._actions.get(self._activeMode, self._defaultAction)
@@ -37,13 +36,10 @@ class ModeBasedAction(Action):
         self._activeMode = self._mode.current
         action = self.getCurrentAction()
         if action != None:
-            action.enter(currentTime, fromVoiceRecognition)            
-        self._needUpdate = fromVoiceRecognition == False
+            action.enter(currentTime, fromVoiceRecognition)
     
     def update(self, currentTime):
-        if self._needUpdate:
-            return
-    
+
         if self._mode.current == self._activeMode:
             action = self.getCurrentAction()
             if action != None:
