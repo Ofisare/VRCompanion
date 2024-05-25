@@ -143,12 +143,14 @@ Possible actions for gestures and voice commands are:
  - KeyPress(Key.A) or KeyPress([Key.Shift, Key.A]): to hold down a single button/multiple buttons while within a gesture and releasing them when leaving the gesture (voice commands hold for a fixed duration)
  - KeyToggle(Key.A) or KeyToggle([Key.Shift, Key.A]): to press a single button/multiple buttons when entering a gesture and pressing it again when leaving it (voice commands only press it once and are thus equal to KeyQuickPress)
  - KeySwitchState(Key.A) or KeySwitchState([Key.Shift, Key.A]): to press and hold down a button/multiple buttons when entering until entering the gesture again.
+ - KeySetState(Key.A, True) or KeySwitchState([Key.Shift, Key.A], False): to set the state of the given keys to pressed (True) or releasd (False)
 
  - MouseQuickPress(0): to press a single button when entering a gesture
  - MousePress(0): to hold down a mouse button while within a gesture and releasing it when leaving the gesture (voice commands hold for a fixed duration)
  - MouseToggle(0): to press a single button when entering a gesture and pressing it again when leaving it (voice commands only press it once and are thus equal to MouseQuickPress)
  - MouseSwitchState(0): to press and hold down a button when entering until entering the gesture again.
 As for Key* you can also multiple mouse buttons, 0: left, 1: right, 2: middle mouse button, -1: for scroll down, and -2: for scroll up
+ - MouseSetState(0, True): to set the state of the given mouse button to pressed (True) or releasd (False)
 
  - GamepadQuickPress(VigemButton.A) or GamepadQuickPress([VigemButton.A, VigemButton.X]): to press a single button/multiple buttons when entering a gesture
  - GamepadPress(VigemButton.A) or GamepadPress([VigemButton.Shift, VigemButton.A]): to hold down a single button/multiple buttons while within a gesture and releasing them when leaving the gesture (voice commands hold for a fixed duration)

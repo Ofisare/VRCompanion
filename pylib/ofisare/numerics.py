@@ -9,6 +9,14 @@ class Vector:
         self.y = y
         self.z = z
 
+def subtract(v1, v2):
+    return Vector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z)
+
+def rotateYaw(v, angle):
+    sin = math.sin(angle)
+    cos = math.cos(angle)
+    return Vector(cos * v.x - sin * v.z, v.y, sin * v.x + cos * v.z)
+
 def getYawPitch(pose):
     yaw = math.atan2(pose.left.z, pose.left.x)
     pitch = math.asin(pose.forward.y)

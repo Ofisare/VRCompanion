@@ -99,3 +99,17 @@ class KeySwitchState(KeyAction):
     def reset(self):
         self.setKeyUp()
         self._down = False
+        
+#******************************************************
+# Action class to set the state of a key when entering 
+#******************************************************
+class KeySetState(KeyAction):
+    def __init__(self, keys, state):
+        KeyAction.init(self, keys)
+        self.stateToSet = state
+
+    def enter(self, currentTime, fromVoiceRecognition):
+        if self.stateToSet:
+            self.setKeyDown()
+        else:
+            self.setKeyUp()

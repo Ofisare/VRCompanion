@@ -9,6 +9,7 @@ from .gestures import *
 from .haptics import *
 from .inventory_actions import *
 from .key_actions import *
+from .keyboard_wrapper import *
 from .mode_based_actions import *
 from .mouse_actions import *
 from .numerics import *

@@ -480,7 +480,7 @@ if starting:
     environment.openVR = openVR
     environment.freePieIO = freePieIO
     environment.mouse = mouse
-    environment.keyboard = keyboard
+    environment.keyboard = KeyboardWrapper(keyboard)
     environment.speech = speech
     environment.vigem = vigem
     environment.VigemSide = VigemSide

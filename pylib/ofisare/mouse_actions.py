@@ -32,9 +32,11 @@ class MouseAction(Action):
         pass
         for key in self._keys:
             if key == -1:
-                environment.mouse.wheelDown = False
+                pass
+                #environment.mouse.wheelDown = False
             elif key == -2:
-                environment.mouse.wheelUp = False
+                pass
+                #environment.mouse.wheelUp = False
             else:
                 environment.mouse.setButton(key, False)
     
@@ -42,10 +44,8 @@ class MouseAction(Action):
         for key in self._keys:
             if key == -1:
                 environment.mouse.wheelDown = True
-                environment.mouse.wheelDown = False
             elif key == -2:
                 environment.mouse.wheelUp = True
-                environment.mouse.wheelUp = False
             else:
                 environment.mouse.setButton(key, True)
                 environment.mouse.setButton(key, False)
@@ -119,3 +119,17 @@ class MouseSwitchState(MouseAction):
     def reset(self):
         self.setKeyUp()
         self._down = False
+        
+#******************************************************
+# Action class to set the state of a key when entering 
+#******************************************************
+class MouseSetState(MouseAction):
+    def __init__(self, keys, state):
+        MouseAction.init(self, keys)
+        self.stateToSet = state
+
+    def enter(self, currentTime, fromVoiceRecognition):
+        if self.stateToSet:
+            self.setKeyDown()
+        else:
+            self.setKeyUp()
