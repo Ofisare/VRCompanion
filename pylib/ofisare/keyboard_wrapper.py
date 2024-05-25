@@ -10,7 +10,6 @@ class KeyboardWrapper:
         else:
             self.keys[key] = self.keys[key] + 1
         
-    
     def setKeyUp(self, key):
         if key not in self.keys:
             return

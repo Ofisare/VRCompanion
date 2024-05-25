@@ -20,6 +20,7 @@ class VRToKeyboard:
         self.yaw = type('yaw',(object,),{})()           # all information regarding the yaw (horizontal head tracking)
         self.yaw.mode = Mode()                          # how to map yaw to keyboard
         self.yaw.sensitivity = 1.25                   # how fast the simulated yaw rotates in radians per second
+        self.yaw.inertiaSensitivity = 1.25                   # how fast the simulated yaw rotates in radians per second
         self.yaw.centerEpsilon = 0.05                   # the arc in which no head tracking happens when looking straight
         self.yaw.current = 0.0
         self.yaw.center = 0.0
@@ -31,6 +32,7 @@ class VRToKeyboard:
         self.pitch = type('pitch',(object,),{})()       # all information regarding the pitch (vertical head tracking)
         self.pitch.mode = Mode()                         # how to map pitch to keyboard
         self.pitch.sensitivity = 1.25                   # how fast the simulated pitch rotates in radians per second
+        self.pitch.inertiaSensitivity = 1.25              # how fast the simulated pitch rotates in radians per second
         self.pitch.centerEpsilon = 0.05                   # the arc in which no head tracking happens when looking straight
         self.pitch.current = 0.0
         self.pitch.center = 0.0
@@ -42,6 +44,7 @@ class VRToKeyboard:
         self.horizontal = type('horizontal',(object,),{})()       # all information regarding the horizontal (room scale movement)
         self.horizontal.mode = Mode()                         # how to map horizontal to keyboard
         self.horizontal.sensitivity = 0.1                   # how fast the simulated horizontal position moves in units per second
+        self.horizontal.inertiaSensitivity = 0.2              # how fast the simulated horizontal position moves in units per second
         self.horizontal.centerEpsilon = 0.05
         self.horizontal.current = 0.0
         self.horizontal.center = 0.0
@@ -53,6 +56,7 @@ class VRToKeyboard:
         self.vertical = type('vertical',(object,),{})()       # all information regarding the vertical (room scale movement)
         self.vertical.mode = Mode()                         # how to map vertical to keyboard
         self.vertical.sensitivity = 0.1                   # how fast the simulated vertical position moves in units per second
+        self.vertical.inertiaSensitivity = 0.2              # how fast the simulated vertical position moves in units per second
         self.vertical.centerEpsilon = 0.05
         self.vertical.current = 0.0
         self.vertical.center = 0.0
@@ -87,21 +91,25 @@ class VRToKeyboard:
         if axis.mode.current == 0:
             return
         
-        maxChange = axis.sensitivity * deltaTime        
-        if abs(target - axis.current) >= maxChange:
+        if axis.direction == None:
+            epsilon = axis.sensitivity * deltaTime
+        else:
+            epsilon = axis.inertiaSensitivity * deltaTime
+        
+        if abs(target - axis.current) >= epsilon:
             if axis.centerKey != None and abs(axis.center - target) < axis.centerEpsilon:
                 axis.current = axis.center
                 self.stopMovement(axis)
                 environment.keyboard.setPressed(axis.centerKey)
             elif axis.current < target:
-                axis.current = min(target, axis.current + maxChange)
+                axis.current = min(target, axis.current + axis.sensitivity * deltaTime)
                 if axis.direction == -1:
                     environment.keyboard.setKeyUp(axis.negativeKey)
                 if axis.direction != 1:
                     environment.keyboard.setKeyDown(axis.positiveKey)
                     axis.direction = 1
             elif axis.current > target:
-                axis.current = max(target, axis.current - maxChange)
+                axis.current = max(target, axis.current - axis.sensitivity * deltaTime)
                 if axis.direction == 1:
                     environment.keyboard.setKeyUp(axis.negativeKey)
                 if axis.direction != -1:
@@ -119,8 +127,10 @@ class VRToKeyboard:
         if axis.direction == None:
             return
         
-        environment.keyboard.setKeyUp(axis.negativeKey)
-        environment.keyboard.setKeyUp(axis.positiveKey)
+        if axis.direction == -1:
+            environment.keyboard.setKeyUp(axis.negativeKey)
+        elif axis.direction == 1:
+            environment.keyboard.setKeyUp(axis.positiveKey)
         axis.direction = None
 
     def reset(self):
