@@ -293,3 +293,32 @@ For all of those:
  - 1: Left trigger or stick
  - 2: Right trigger or stick
 For the dpad an additional vrToGamepad.dpadThreshold can be defined.
+
+
+########################
+# VR Roomscale Mapping #
+########################
+The "vrRoomscale" handles mapping from headset rotation/movement to actions that are performed for a certain time to accomodate the same change in game.
+Some games (e.g. Terra Nova) perform a rotation of the player by key presses instead of mouse movement (often used for a decoupled aiming).
+In contrast to vrToMouse which could directly map the change in rotation to mouse movement, the vrRoomscale handles this by activating the action for a given duration.
+The duration is based on simulating the movement for each frame using a sensitivity (how much does the player rotates per second or moves per second).
+For each axis (yaw, pitch, movement horizontally and vertically) there are 3 possible actions (negative, positive and centering), for example:
+vrRoomscale.yaw.negativeAction = KeyPress(Key.A)
+vrRoomscale.yaw.positiveAction = KeyPress(Key.D)
+vrRoomscale.pitch.sensitivity = 0.3
+vrRoomscale.pitch.centerEpsilon = 0.1
+vrRoomscale.pitch.negativeAction = KeyPress(Key.V)
+vrRoomscale.pitch.centerAction = KeyPress(Key.F) # performed when looking straight, should reset the pitch in game
+vrRoomscale.pitch.positiveAction = KeyPress(Key.R)
+vrRoomscale.horizontal.negativeAction = KeyPress(Key.Z)
+vrRoomscale.horizontal.positiveAction = KeyPress(Key.C)
+vrRoomscale.horizontal.sensitivity = 0.5
+vrRoomscale.vertical.negativeAction = KeyPress(Key.X)
+vrRoomscale.vertical.positiveAction = KeyPress(Key.W)
+vrRoomscale.vertical.sensitivity = 0.5
+
+Each axis has its own mode to activate or deactivate. This can be done directly in the script (e.g. vrRoomscale.yaw.mode.current = 1) or bound to a gesture:
+# switch headset: left stick
+roomscaleModes = [vrRoomscale.yaw.mode, vrRoomscale.pitch.mode, vrRoomscale.horizontal.mode, vrRoomscale.vertical.mode]
+gestureTracker.buttonLeftStick.enabled = True
+gestureTracker.buttonLeftStick.action = ModeBasedAction(vrRoomscale.yaw.mode, {1: ModeSwitch(roomscaleModes, 0)}, ModeSwitch(roomscaleModes, 1)) 

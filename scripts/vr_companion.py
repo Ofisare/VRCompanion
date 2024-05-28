@@ -4,12 +4,15 @@
 # While no feedback of the game logic is possible (like being hit), weapon recoil etc. might be simulated
 # by observing the corresponding actions (track controller movement for melee swings, the trigger press
 # for gun recoil etc.).
-# Configurations are done using profile files, see scripts/profiles/#How to define a profile.txt
+# Configurations are done using profile files, see scripts/user_profiles/#How to define a profile.txt
 #
 # After starting, a small launcher will be shown to select a game profile.
 # The last settings are remembered in scripts/vr_companion.json
 # Using the console version, you can then create shortcuts to instantly start a specific profile without the launcher.
 # I.e.: FreePIE.Console.exe .\scripts\vr_companion.py TerminatorResistance
+#
+# The launcher also contains an auto updater to load the latest version of the script from GitHub.
+# After the update, you have to restart FreePIE, so new functionality can be loaded.
 #
 # Under "Settings > Plugins > Open VR" you can switch the vr engine to be used:
 # - OpenVR: most compatible
@@ -134,7 +137,7 @@ def reset():
     global v2k
     global vrToMouse
     global vrToGamepad
-    global vrToKeyboard
+    global vrRoomscale
 
     # recenter the device
     openVR.center()
@@ -159,7 +162,7 @@ def reset():
     v2k.reset()
     vrToMouse.reset()
     vrToGamepad.reset()
-    vrToKeyboard.reset()
+    vrRoomscale.reset()
 
 # getting new information from device
 def update():
@@ -171,7 +174,7 @@ def update():
     global v2k
     global vrToMouse
     global vrToGamepad
-    global vrToKeyboard
+    global vrRoomscale
     
     # check interval
     currentTime = time.clock()
@@ -188,7 +191,7 @@ def update():
     # check vr updates
     vrToMouse.update(currentTime, deltaTime)
     vrToGamepad.update(currentTime, deltaTime)
-    vrToKeyboard.update(currentTime, deltaTime)
+    vrRoomscale.update(currentTime, deltaTime)
     
     # perform touch haptics
     touchHapticsPlayer.update(deltaTime)
@@ -308,7 +311,7 @@ def selectProfile():
     global touchHapticsPlayer
     global vrToMouse
     global vrToGamepad
-    global vrToKeyboard
+    global vrRoomscale
     global profile
     
     # load settings
@@ -565,11 +568,11 @@ if starting:
     # initialize vr to mouse and gamepad
     vrToMouse = VRToMouse()
     vrToGamepad = VRToGamepad()
-    vrToKeyboard = VRToKeyboard()
+    vrRoomscale = VRRoomscale()
     
     environment.vrToMouse = vrToMouse
     environment.vrToGamepad = vrToGamepad
-    environment.vrToKeyboard = vrToKeyboard
+    environment.vrRoomscale = vrRoomscale
     environment.hapticPlayer = hapticPlayer
     environment.touchHapticsPlayer = touchHapticsPlayer
             

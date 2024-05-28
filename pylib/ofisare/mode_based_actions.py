@@ -63,9 +63,15 @@ class ModeBasedAction(Action):
             action.reset()
 
 class ModeSwitch(Action):
-    def __init__(self, mode, selectedMode):
+    def __init__(self, modes, selectedMode):
         Action.__init__(self)
-        self._mode = mode
+        self._modes = []
+        if modes != None:
+            # append or extend (both are valid)
+            if isinstance(modes, list):
+                self._modes.extend(modes)
+            else:
+                self._modes.append(modes)
         self._selectedMode = selectedMode
         
     def enter(self, currentTime, fromVoiceRecognition):
@@ -73,7 +79,8 @@ class ModeSwitch(Action):
             self.leave()
         
     def leave(self):
-        self._mode.current = self._selectedMode
+        for mode in self._modes:
+            mode.current = self._selectedMode
 
 class ModeCopy(Action):
     def __init__(self, mode, targetMode):
