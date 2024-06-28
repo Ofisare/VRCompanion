@@ -11,7 +11,7 @@ With each interaction haptics can be associated (bhaptics, controller vibrations
 Additionally, a small inventory management system, so the current weapon has the right haptic feedback and the voice commands can reach the correct button.
 
 Profiles are found in scripts/profiles and a default profile (WASD_Default.py).
-Custom profiles should be created in scripts/user_profiles which also contains a **#How to define a profile**.
+Custom profiles should be created in scripts/user_profiles which also contains a readme for **How to define a profile**.
 
 ## Installation
  - download the [complete build with script and profiles](https://github.com/Ofisare/VRCompanion/releases/tag/Release_1.2)

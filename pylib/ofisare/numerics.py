@@ -39,5 +39,17 @@ def getRoll(pose):
     planeRightZ = -math.cos(yaw);
     return math.asin(max(-1, min(1, pose.up.x * planeRightX + pose.up.z * planeRightZ)))
     
-def dotProduct(vector1, vector2):
-    return vector1.x*vector2.x + vector1.y*vector2.y + vector1.z*vector2.z
+def dotProduct(a, b):
+    return a.x * b.x + a.y * b.y + a.z * b.z
+
+def crossProduct(a, b):
+    return Vector(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y - b.x)
+    
+def angleBetween(a, b, n):
+    dot = max(-1, min(1, dotProduct(a, b)))
+    det = dotProduct(n, crossProduct(a, b))
+    if det > 0:
+        return math.acos(dot)
+    else:
+        return -math.acos(dot)
+    #return math.atan2(det, dot)

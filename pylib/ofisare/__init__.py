@@ -16,6 +16,7 @@ from .numerics import *
 from .time_based_actions import *
 from .touch_haptics import *
 from .voice_commands import *
+from .vr_driving import *
 from .vr_roomscale import *
 from .vr_to_gamepad import *
 from .vr_to_mouse import *

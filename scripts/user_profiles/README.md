@@ -4,7 +4,7 @@
 
 The OpenXR API is the only api that allows Freepie to block all mappings of controller buttons to ingame action (done per default).
 
-This way the profile can be freely defined without accidentally trigger other ingame actions (like shooting the rocket launcher at your feets when you actually wanted to grab the pistol).
+This way the profile can be freely defined without accidentally triggering other ingame actions (like shooting the rocket launcher at your feets when you actually wanted to grab the pistol).
 
 If you just want to enhance the existing interaction mapping of for instance UEVR or any other game/application just use:
 openVR.configureInput(OpenXR_All)

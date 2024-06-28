@@ -138,6 +138,7 @@ def reset():
     global vrToMouse
     global vrToGamepad
     global vrRoomscale
+    global vrDriving
 
     # recenter the device
     openVR.center()
@@ -163,6 +164,7 @@ def reset():
     vrToMouse.reset()
     vrToGamepad.reset()
     vrRoomscale.reset()
+    vrDriving.reset()
 
 # getting new information from device
 def update():
@@ -175,6 +177,7 @@ def update():
     global vrToMouse
     global vrToGamepad
     global vrRoomscale
+    global vrDriving
     
     # check interval
     currentTime = time.clock()
@@ -192,6 +195,7 @@ def update():
     vrToMouse.update(currentTime, deltaTime)
     vrToGamepad.update(currentTime, deltaTime)
     vrRoomscale.update(currentTime, deltaTime)
+    vrDriving.update(currentTime, deltaTime)
     
     # perform touch haptics
     touchHapticsPlayer.update(deltaTime)
@@ -312,6 +316,7 @@ def selectProfile():
     global vrToMouse
     global vrToGamepad
     global vrRoomscale
+    global vrDriving
     global profile
     
     # load settings
@@ -472,7 +477,10 @@ def selectProfile():
             profile = 'scripts/profiles/' + profile + '.py'
     with open(profile) as f:
         exec(f.read())
-            
+          
+def watch(param):
+    diagnostics.watch(param)
+    
 # initialization of state and constants
 if starting:
     diagnostics.watch(sys.version)
@@ -569,12 +577,16 @@ if starting:
     vrToMouse = VRToMouse()
     vrToGamepad = VRToGamepad()
     vrRoomscale = VRRoomscale()
+    vrDriving = VRDriving()
     
     environment.vrToMouse = vrToMouse
     environment.vrToGamepad = vrToGamepad
     environment.vrRoomscale = vrRoomscale
+    environment.vrDriving = vrDriving
     environment.hapticPlayer = hapticPlayer
     environment.touchHapticsPlayer = touchHapticsPlayer
+    
+    environment.watch = watch
             
     selectProfile()
     
@@ -590,16 +602,18 @@ if DebugOutput:
     diagnostics.watch(openVR.headPose.position.y)
     diagnostics.watch(openVR.headPose.position.z)
         
-    diagnostics.watch(openVR.leftTouchPose.position.x)
-    diagnostics.watch(openVR.leftTouchPose.position.y)
-    diagnostics.watch(openVR.leftTouchPose.position.z)
+    diagnostics.watch(openVR.leftTouchPose.left.x)
+    diagnostics.watch(openVR.leftTouchPose.left.y)
+    diagnostics.watch(openVR.leftTouchPose.left.z)
     
-    diagnostics.watch(openVR.rightTouchPose.position.x)
-    diagnostics.watch(openVR.rightTouchPose.position.y)
-    diagnostics.watch(openVR.rightTouchPose.position.z)
+    diagnostics.watch(vrDriving._initialLeftVector.x)
+    diagnostics.watch(vrDriving._initialLeftVector.y)
+    diagnostics.watch(vrDriving._initialLeftVector.z)
     
     diagnostics.watch(vrToMouse.mode.current)
     diagnostics.watch(gestureSets.mode.current)
     diagnostics.watch(weaponInventory.current)
+    
+    diagnostics.watch(vrDriving._leftAngleOffset)
     
     diagnostics.watch(time.clock())

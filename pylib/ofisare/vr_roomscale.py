@@ -9,6 +9,7 @@ class VRRoomscaleAxis:
         self.mode = Mode()              # mode to enable axis
         self.sensitivity = 1.25         # how fast the simulated axis moves/rotates in units/radians per second
         self.centerEpsilon = 0.05       # epsilon around center position to perform center action
+        self.holdThreshold = 100000     # a threshold to hold negative or positive when target exceeds this value
         self.current = 0.0              # the simulated current axis value
         self.center = 0.0               # the center position for the center action
         self.centered = True            # whether the axis has been centered
@@ -16,6 +17,71 @@ class VRRoomscaleAxis:
         self.negativeAction = None      # the action to perform when the axis is decreasing
         self.positiveAction = None      # the action to perform when the axis is increasing
         self.centerAction = None        # the action to perform to center the axis (if available)
+        
+    def update(self, currentTime, deltaTime, target):
+        if self.mode.current == 0:
+            return
+        
+        maxChange = self.sensitivity * deltaTime
+        if abs(target - self.current) >= maxChange || abs(target - self.center) > self.holdThreshold:
+            if self.centerAction != None and abs(self.center - target) < self.centerEpsilon:
+            # reset axis
+                if self.direction == 0:
+                    self.stopMovement()
+                    self.centered = True
+                elif self.centered == False:
+                    self.stopMovement()
+                    self.current = self.center
+                    self.centerAction.enter(currentTime, False)
+                    self.direction = 0
+            
+            elif self.current < target or target > self.center + self.holdThreshold:
+            # update axis
+                self.current = min(target, self.current + maxChange)
+                # perform positive movement
+                if self.direction == 1:
+                    self.positiveAction.update(currentTime)
+                else:
+                    # stop current movement
+                    self.stopMovement()
+                    # start positive movement
+                    self.centered = False
+                    self.direction = 1
+                    self.positiveAction.enter(currentTime, False)
+                    
+            elif self.current > target or target < self.center - self.holdThreshold:
+            # update axis
+                self.current = max(target, self.current - maxChange)
+                # perform negative movement
+                if self.direction == -1:
+                    self.negativeAction.update(currentTime)
+                else:
+                    # stop current movement
+                    self.stopMovement()
+                    # start negative movement
+                    self.centered = False
+                    self.direction = -1
+                    self.negativeAction.enter(currentTime, False)
+            else:
+                self.stopMovement()
+        else:
+            self.stopMovement()
+    
+    def stopMovement(self):
+        if self.mode.current == 0:
+            return
+        
+        if self.direction == None:
+            return
+        
+        if self.direction == 0:
+            self.centerAction.leave()
+        elif self.direction == -1:
+            self.negativeAction.leave()
+        elif self.direction == 1:
+            self.positiveAction.leave()
+        
+        self.direction = None
 
 #******************************************************************
 # Class to handle headset rotaion and movement to discrete actions
@@ -55,72 +121,7 @@ class VRRoomscale:
         
         self.updateCore(currentTime, deltaTime, self.horizontal, headOffset.x)
         self.updateCore(currentTime, deltaTime, self.vertical, -headOffset.z)
-
-    def updateCore(self, currentTime, deltaTime, axis, target):
-        if axis.mode.current == 0:
-            return
-        
-        maxChange = axis.sensitivity * deltaTime
-        if abs(target - axis.current) >= maxChange:
-            if axis.centerAction != None and abs(axis.center - target) < axis.centerEpsilon:
-            # reset axis
-                if axis.direction == 0:
-                    self.stopMovement(axis)
-                    axis.centered = True
-                elif axis.centered == False:
-                    self.stopMovement(axis)
-                    axis.current = axis.center
-                    axis.centerAction.enter(currentTime, False)
-                    axis.direction = 0
-            
-            elif axis.current < target:
-            # update axis
-                axis.current = min(target, axis.current + maxChange)
-                # perform positive movement
-                if axis.direction == 1:
-                    axis.positiveAction.update(currentTime)
-                else:
-                    # stop current movement
-                    self.stopMovement(axis)
-                    # start positive movement
-                    axis.centered = False
-                    axis.direction = 1
-                    axis.positiveAction.enter(currentTime, False)
-                    
-            elif axis.current > target:
-            # update axis
-                axis.current = max(target, axis.current - maxChange)
-                # perform negative movement
-                if axis.direction == -1:
-                    axis.negativeAction.update(currentTime)
-                else:
-                    # stop current movement
-                    self.stopMovement(axis)
-                    # start negative movement
-                    axis.centered = False
-                    axis.direction = -1
-                    axis.negativeAction.enter(currentTime, False)
-            else:
-                self.stopMovement(axis)
-        else:
-            self.stopMovement(axis)
     
-    def stopMovement(self, axis):
-        if axis.mode.current == 0:
-            return
-        
-        if axis.direction == None:
-            return
-        
-        if axis.direction == 0:
-            axis.centerAction.leave()
-        elif axis.direction == -1:
-            axis.negativeAction.leave()
-        elif axis.direction == 1:
-            axis.positiveAction.leave()
-        
-        axis.direction = None
-
     def reset(self):
         yawHead, pitchHead = getYawPitch(environment.openVR.headPose)
         self.headOrigin = environment.openVR.headPose.position
@@ -131,7 +132,7 @@ class VRRoomscale:
         self.horizontal.current = 0
         self.vertical.current = 0
         
-        self.stopMovement(self.yaw)
-        self.stopMovement(self.pitch)
-        self.stopMovement(self.horizontal)
-        self.stopMovement(self.vertical)
+        self.yaw.stopMovement()
+        self.pitch.stopMovement()
+        self.horizontal.stopMovement()
+        self.vertical.stopMovement()
