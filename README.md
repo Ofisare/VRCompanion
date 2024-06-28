@@ -47,10 +47,14 @@ Turn any game (that supports reshade) into a limited vr game with free head and 
  - create a profile and set the vrToMouse.Mode to VrToMouse_Headset for head aiming, VrToMouse_Left or VrToMouse_Right for left or right controller based aiming or adapt an existing one
 
 I map this often to a gesture to switch ingame between looking around and aiming:
+```
 gestureTracker.grabRight.enabled = True
 gestureTracker.grabRight.action = ModeBasedAction(vrToMouse.mode, {VrToMouse_Headset: ModeSwitch(vrToMouse.mode, VrToMouse_Right)}, ModeSwitch(vrToMouse.mode, VrToMouse_Headset)])
+```
 or
+```
 gestureTracker.grabRight.action = ModeSwitchWithReset(vrToMouse.mode, VrToMouse_Right, VrToMouse_Headset)
+```
 
 Use either virtual desktop or vorpx (or anything else you have) to get it on the screen.
 If you use head lock (virtual desktop) or full vr (vorpx), you might want to set vrToMouse.enableRoll = True.
