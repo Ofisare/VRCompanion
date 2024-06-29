@@ -6,8 +6,9 @@ import math
 
 class VRRoomscaleAxis:
     def __init__(self):
-        self.mode = Mode()              # mode to enable axis
-        self.sensitivity = 1.25         # how fast the simulated axis moves/rotates in units/radians per second
+        self.mode = Mode()              # mode to enable axis (0: off, 1: action duration + hold, 10: direct mouse, 20: direct gamepad)
+        self._lastMode = 0              
+        self.sensitivity = 1.25         # how fast the simulated axis moves/rotates in units/radians per second, or for mapping the target value to mouse or gamepad axis
         self.centerEpsilon = 0.05       # epsilon around center position to perform center action
         self.holdThreshold = 100000     # a threshold to hold negative or positive when target exceeds this value
         self.current = 0.0              # the simulated current axis value
@@ -17,71 +18,89 @@ class VRRoomscaleAxis:
         self.negativeAction = None      # the action to perform when the axis is decreasing
         self.positiveAction = None      # the action to perform when the axis is increasing
         self.centerAction = None        # the action to perform to center the axis (if available)
+        self.gamepadSide = None         # the side of the gamepad stick
+        self.gamepadAxis = None         # the gamepad stick axis
+        self.mouseAxis = None           # the mouse axis
         
     def update(self, currentTime, deltaTime, target):
-        if self.mode.current == 0:
-            return
-        
-        maxChange = self.sensitivity * deltaTime
-        if abs(target - self.current) >= maxChange || abs(target - self.center) > self.holdThreshold:
-            if self.centerAction != None and abs(self.center - target) < self.centerEpsilon:
-            # reset axis
-                if self.direction == 0:
-                    self.stopMovement()
-                    self.centered = True
-                elif self.centered == False:
-                    self.stopMovement()
-                    self.current = self.center
-                    self.centerAction.enter(currentTime, False)
-                    self.direction = 0
-            
-            elif self.current < target or target > self.center + self.holdThreshold:
-            # update axis
-                self.current = min(target, self.current + maxChange)
-                # perform positive movement
-                if self.direction == 1:
-                    self.positiveAction.update(currentTime)
+        # mapped to action by duration
+        if self.mode.current == 1:
+            maxChange = self.sensitivity * deltaTime
+            if abs(target - self.current) >= maxChange or abs(target - self.center) > self.holdThreshold:
+                if self.centerAction != None and abs(self.center - target) < self.centerEpsilon:
+                # reset axis
+                    if self.direction == 0:
+                        self.stopMovement()
+                        self.centered = True
+                    elif self.centered == False:
+                        self.stopMovement()
+                        self.current = self.center
+                        self.centerAction.enter(currentTime, False)
+                        self.direction = 0
+                
+                elif self.current < target or target > self.center + self.holdThreshold:
+                # update axis
+                    self.current = min(target, self.current + maxChange)
+                    # perform positive movement
+                    if self.direction == 1:
+                        self.positiveAction.update(currentTime)
+                    else:
+                        # stop current movement
+                        self.stopMovement()
+                        # start positive movement
+                        self.centered = False
+                        self.direction = 1
+                        self.positiveAction.enter(currentTime, False)
+                        
+                elif self.current > target or target < self.center - self.holdThreshold:
+                # update axis
+                    self.current = max(target, self.current - maxChange)
+                    # perform negative movement
+                    if self.direction == -1:
+                        self.negativeAction.update(currentTime)
+                    else:
+                        # stop current movement
+                        self.stopMovement()
+                        # start negative movement
+                        self.centered = False
+                        self.direction = -1
+                        self.negativeAction.enter(currentTime, False)
                 else:
-                    # stop current movement
                     self.stopMovement()
-                    # start positive movement
-                    self.centered = False
-                    self.direction = 1
-                    self.positiveAction.enter(currentTime, False)
-                    
-            elif self.current > target or target < self.center - self.holdThreshold:
-            # update axis
-                self.current = max(target, self.current - maxChange)
-                # perform negative movement
-                if self.direction == -1:
-                    self.negativeAction.update(currentTime)
-                else:
-                    # stop current movement
-                    self.stopMovement()
-                    # start negative movement
-                    self.centered = False
-                    self.direction = -1
-                    self.negativeAction.enter(currentTime, False)
             else:
                 self.stopMovement()
+        # mapped to mouse axis
+        elif self.mode.current == 10:
+            value = (target - self.center) / self.sensitivity
+            if self.mouseAxis != 1:
+                environment.mouse.deltaX = value
+            else:
+                environment.mouse.deltaY = value
+        # mapped to gamepad
+        elif self.mode.current == 20:
+            value = (target - self.center) / self.sensitivity
+            environment.vigem.SetStick(environment.vrToGamepad.controller, self.gamepadSide, self.gamepadAxis, value)
+        # no movement 
         else:
             self.stopMovement()
+                
+        self._lastMode = self.mode.current
     
     def stopMovement(self):
-        if self.mode.current == 0:
-            return
-        
-        if self.direction == None:
-            return
-        
-        if self.direction == 0:
-            self.centerAction.leave()
-        elif self.direction == -1:
-            self.negativeAction.leave()
-        elif self.direction == 1:
-            self.positiveAction.leave()
-        
-        self.direction = None
+        if self._lastMode == 1:        
+            if self.direction == None:
+                return
+            
+            if self.direction == 0:
+                self.centerAction.leave()
+            elif self.direction == -1:
+                self.negativeAction.leave()
+            elif self.direction == 1:
+                self.positiveAction.leave()
+            
+            self.direction = None
+        elif self._lastMode == 20:
+            environment.vigem.SetStick(environment.vrToGamepad.controller, self.gamepadSide, self.gamepadAxis, 0)
 
 #******************************************************************
 # Class to handle headset rotaion and movement to discrete actions

@@ -52,4 +52,3 @@ def angleBetween(a, b, n):
         return math.acos(dot)
     else:
         return -math.acos(dot)
-    #return math.atan2(det, dot)

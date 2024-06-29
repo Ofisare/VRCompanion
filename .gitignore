@@ -272,3 +272,6 @@
 /vJoyInterface.dll
 /vJoyInterfaceWrap.dll
 /scripts/user_profiles/*.py
+/SharpDX.DirectInput.dll
+/SharpDX.XInput.dll
+/SharpDX.dll

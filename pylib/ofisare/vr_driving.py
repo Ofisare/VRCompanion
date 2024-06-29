@@ -84,8 +84,6 @@ class VRDriving:
         self.axis.update(currentTime, deltaTime, -angle)
         self._lastAngle = angle
         
-        environment.watch(angle)
-        
     def getVectors(self, pose):
         return pose.left, pose.up
     

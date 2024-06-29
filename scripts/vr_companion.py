@@ -123,7 +123,6 @@ class ResetAction(Action):
     def enter(self, currentTime, fromVoiceRecognition):
         reset()
 
-
 #***********************************************
 # global methods controlling the overall script
 #***********************************************
@@ -262,6 +261,9 @@ class SettingsForm(Form):
         self.startButton.Dock = DockStyle.Top
         self.startButton.Click += self.buttonPressed
         
+        if "dev" in settings and bool(settings["dev"]):
+            skipUpdate = True
+        
         if skipUpdate == False:            
             self.updater = AutoUpdater()
         
@@ -369,6 +371,12 @@ def selectProfile():
     VrToMouse_Left = 2
     VrToMouse_Right = 3
     VrToMouse_StickOnly = 4
+    
+    # possible vr driving mods
+    VrDriving_None = 0
+    VrDriving_Action = 1
+    VrDriving_Mouse = 10
+    VrDriving_Gamepad = 20
     
     # possible openXR interaction settings
     OpenXR_All = 1
@@ -495,6 +503,7 @@ if starting:
     environment.speech = speech
     environment.vigem = vigem
     environment.VigemSide = VigemSide
+    environment.VigemAxis = VigemAxis
     
     global profile
     if "profile" in globals():
@@ -614,6 +623,6 @@ if DebugOutput:
     diagnostics.watch(gestureSets.mode.current)
     diagnostics.watch(weaponInventory.current)
     
-    diagnostics.watch(vrDriving._leftAngleOffset)
+    diagnostics.watch(vrDriving._lastAngle)
     
     diagnostics.watch(time.clock())
