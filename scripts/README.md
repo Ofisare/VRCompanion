@@ -8,28 +8,28 @@ While no feedback of the game logic is possible (like being hit), weapon recoil 
 by observing the corresponding actions (track controller movement for melee swings, the trigger press
 for gun recoil etc.).
 
-Configurations are done using profile files, see `scripts/user_profiles/#How to define a profile.txt`
+Configurations are done using profile files, see `scripts/user_profiles/README.md`
 
 After starting, a small launcher will be shown to select a game profile.
-
 The last settings are remembered in scripts/vr_companion.json
 Using the console version, you can then create shortcuts to instantly start a specific profile without the launcher.
 I.e.: FreePIE.Console.exe .\scripts\vr_companion.py TerminatorResistance
 
 The launcher also contains an auto updater to load the latest version of the script from GitHub.
 After the update, you have to restart FreePIE, so new functionality can be loaded.
+If a new version of FreePIE is required the script will communicate this with an error message.
+In that case, download the latest [complete build with scripts and profiles]https://github.com/Ofisare/VRCompanion/releases/tag/Release_2.0).
 
 Under `Settings > Plugins > Open VR` you can switch the vr engine to be used:
  - **OpenVR**: most compatible
  - **OpenXR**: only in 64bit version, has to be started before the game
  - **Oculus**: only for Oculus Rift (s) and Meta Quest connected via Cable and possibly Air Link (controller haptics might not be working)
 
-
 # Feature Overview:
 
 ### Gestures
 
- There are 3 gun poses (pistol: both hands close together, rifle: left or right hand in front of the other hand).
+ There are three gun poses (pistol: both hands close together, rifle: left or right hand in front of the other hand).
  The gun poses can press certain buttons to activate for instance ingame aiming for higher accuracy or toggle modes
  to allow adding multiple functions to the same button in a context aware scenario.
 
@@ -53,7 +53,6 @@ might be executed as long as you are within the gesture.
 
 ### VR to Mouse/Gamepad
 
-
 Headset or controller movement can be mapped directly to mouse movement.
 Controller sticks and trigger can be directly mapped to gamepad sticks, dpads and triggers.
 All these mapping use the mode functionality, so they can be switched easily during gameplay
@@ -61,12 +60,10 @@ with matching gesture interactions or button presses.
 
 ### Bhaptics and Controller Haptics Feedback
 
-
 With each gesture or voice command a bhaptics/controller feedback can be associated (currently only provide files for the vest as I can't test more).
 Interaction/weapon feedback is also possible, without actually triggering an ingame action.
 
 ### Inventory Management
-
 
 To have the correct weapon sounds. There is a limited inventory system to keep track of
 the selected and available weapons to have the right bhaptics feedbacks.
@@ -88,7 +85,8 @@ correct movement of the image according to controller movement
 
 ### acknoweledgements:
  - voice recognitation adapted from https://github.com/NoxWings/FreePie-Scripts
- - vr support based on special build from https://github.com/Ofisare/FreePIE/releases/tag/OpenVR_v0.2
+ - vr support based on special build from https://github.com/Ofisare/FreePIE
  - bhaptics integration based on https://github.com/bhaptics/tact-python
+ - controller support based on https://github.com/nefarius/ViGEmBus/releases/tag/v1.22.0
 
 

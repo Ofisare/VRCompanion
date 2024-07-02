@@ -33,8 +33,10 @@ class VRDriving:
         self._lastAngle = 0
         
         self._initialLeftVector = Vector()
+        self._initialLeftPerpendicularVector = Vector()
         self._leftAngleOffset = 0
         self._initialRightVector = Vector()
+        self._initialRightPerpendicularVector = Vector()
         self._leftRightOffset = 0
 
     def update(self, currentTime, deltaTime):
@@ -53,12 +55,13 @@ class VRDriving:
         
         # get angle based on left controller
         if self.leftControllerActive.current:
-            vector, forward = self.getVectors(environment.openVR.leftTouchPose)
+            vector, perpendicular = self.getVectors(environment.openVR.leftTouchPose)
             if self._lastLeftControllerActive:
-                angle += angleBetween(self._initialLeftVector, vector, forward)
+                angle += angleBetween(self._initialLeftVector, vector, self._initialLeftPerpendicularVector)
             else:
                 self._lastLeftControllerActive = True
                 self._initialLeftVector = vector
+                self._initialLeftPerpendicularVector = perpendicular
                 self._leftAngleOffset = self._lastAngle
             angle += self._leftAngleOffset
             count += 1
@@ -67,12 +70,13 @@ class VRDriving:
         
         # get angle based on right controller
         if self.rightControllerActive.current:
-            vector, normal = self.getVectors(environment.openVR.rightTouchPose)
+            vector, perpendicular = self.getVectors(environment.openVR.rightTouchPose)
             if self._lastRightControllerActive:
-                angle += angleBetween(self._initialRightVector, vector, normal)
+                angle += angleBetween(self._initialRightVector, vector, self._initialRightPerpendicularVector)
             else:
                 self._lastRightControllerActive = True
                 self._initialRightVector = vector
+                self._initialRightPerpendicularVector = perpendicular
                 self._rightAngleOffset = self._lastAngle
             angle += self._rightAngleOffset
             count += 1
@@ -81,11 +85,11 @@ class VRDriving:
         
         angle /= count
         
-        self.axis.update(currentTime, deltaTime, -angle)
+        self.axis.update(currentTime, deltaTime, angle)
         self._lastAngle = angle
         
     def getVectors(self, pose):
-        return pose.left, pose.up
+        return pose.left, pose.forward
     
     def reset(self):
         self.axis.stopMovement()

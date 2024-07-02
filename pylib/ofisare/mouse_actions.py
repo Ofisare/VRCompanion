@@ -125,7 +125,7 @@ class MouseSwitchState(MouseAction):
 #******************************************************
 class MouseSetState(MouseAction):
     def __init__(self, keys, state):
-        MouseAction.init(self, keys)
+        MouseAction.__init__(self, keys)
         self.stateToSet = state
 
     def enter(self, currentTime, fromVoiceRecognition):

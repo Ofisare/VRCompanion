@@ -105,7 +105,7 @@ class KeySwitchState(KeyAction):
 #******************************************************
 class KeySetState(KeyAction):
     def __init__(self, keys, state):
-        KeyAction.init(self, keys)
+        KeyAction.__init__(self, keys)
         self.stateToSet = state
 
     def enter(self, currentTime, fromVoiceRecognition):

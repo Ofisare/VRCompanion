@@ -20,7 +20,7 @@ gestureTracker.triggerRight.action = KeyPress(Key.W)
 vrDriving.axis.mode.current = VrDriving_Gamepad
 vrDriving.axis.gamepadSide = VigemSide.Left
 vrDriving.axis.gamepadAxis = VigemAxis.XAxis
-vrDriving.axis.sensitivity = 0.9
+vrDriving.axis.sensitivity = 1.7
 
 gestureTracker.grabRight.enabled = True
 gestureTracker.grabRight.action = ModeSwitchWithReset(vrDriving.rightControllerActive, 1, 0)

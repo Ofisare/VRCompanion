@@ -11,10 +11,10 @@ With each interaction haptics can be associated (bhaptics, controller vibrations
 Additionally, a small inventory management system, so the current weapon has the right haptic feedback and the voice commands can reach the correct button.
 
 Profiles are found in scripts/profiles and a default profile (WASD_Default.py).
-Custom profiles should be created in scripts/user_profiles which also contains a readme for **How to define a profile**.
+Custom profiles should be created in scripts/user_profiles which also contains a README.md for **How to define a profile**.
 
 ## Installation
- - download the [complete build with script and profiles](https://github.com/Ofisare/VRCompanion/releases/tag/Release_1.2)
+ - download the [complete build with script and profiles](https://github.com/Ofisare/VRCompanion/releases/tag/Release_2.0)
  - unzip
  - start freepie
  - load scripts/vr_companion.py
@@ -28,7 +28,10 @@ Custom profiles should be created in scripts/user_profiles which also contains a
 The debug output should give current information about the orientation of the headset/controllers if everything is working.
 For OpenXR it is important to start the script before starting the game so the used OpenXR API Layer is correctly registered (closing the application unregisters the api layer again).
 
-Per default, OpenVR is used. Under Settings > Open VR you can select the Oculus runtime (for Oculus Rift (s) and possibly Meta Quest over AirLink, but possibly no haptics) and OpenXR (experimental).
+Per default, OpenVR is used. Under Settings > Open VR you can select the
+ - Oculus runtime (for Oculus Rift (s) and possibly Meta Quest over AirLink, but possibly no haptics),
+ - OpenXR (experimental), and
+ - OpenVR (most compatible).
 
 For gamepad support using the ViGEm plugin you need to install this first: https://github.com/nefarius/ViGEmBus/releases/tag/v1.22.0
 
@@ -44,7 +47,7 @@ Turn any game (that supports reshade) into a limited vr game with free head and 
  - during installation check atleast "Depth3D by BlueSkyDefender" for effects and "Freepie by crosire" for add-ons
  - copy scripts/reshade/DetachedAiming_pixel.fx to the reshade shader folder of the game
  - in reshade activate both Depth3D and DetachedAiming (this has to be positioned after Depth3D)
- - create a profile and set the vrToMouse.Mode to VrToMouse_Headset for head aiming, VrToMouse_Left or VrToMouse_Right for left or right controller based aiming or adapt an existing one
+ - create a profile and set the `vrToMouse.Mode` to `VrToMouse_Headset` for head aiming, `VrToMouse_Left` or `VrToMouse_Right` for left or right controller based aiming or adapt an existing one
 
 I map this often to a gesture to switch ingame between looking around and aiming:
 ```
@@ -57,10 +60,10 @@ gestureTracker.grabRight.action = ModeSwitchWithReset(vrToMouse.mode, VrToMouse_
 ```
 
 Use either virtual desktop or vorpx (or anything else you have) to get it on the screen.
-If you use head lock (virtual desktop) or full vr (vorpx), you might want to set vrToMouse.enableRoll = True.
+If you use head lock (virtual desktop) or full vr (vorpx), you might want to set `vrToMouse.enableRoll.current = True`.
 It is useful to use a wider screen resolution (vorpx allows to create virtual screens), as it allows further horizontal movement with the controller before seeing some black bars.
 
-Depending on the DirectX Version you might have to check flip pitch and or roll to get the correct movement of the image according to controller movement
+Depending on the DirectX Version you might have to check flip pitch and/or roll to get the correct movement of the image according to controller movement
 
 # Additional links
 [Discord](https://discord.com/channels/747967102895390741/1193837770767081492/1193837770767081492)

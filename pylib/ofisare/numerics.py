@@ -46,9 +46,6 @@ def crossProduct(a, b):
     return Vector(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y - b.x)
     
 def angleBetween(a, b, n):
-    dot = max(-1, min(1, dotProduct(a, b)))
-    det = dotProduct(n, crossProduct(a, b))
-    if det > 0:
-        return math.acos(dot)
-    else:
-        return -math.acos(dot)
+    dota = max(-1, min(1, dotProduct(a, b)))    
+    dotn = max(-1, min(1, dotProduct(n, b)))    
+    return math.atan2(dotn, dota)

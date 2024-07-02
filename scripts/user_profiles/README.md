@@ -2,12 +2,12 @@
 
 ## OpenXR Mapping
 
-The OpenXR API is the only api that allows Freepie to block all mappings of controller buttons to ingame action (done per default).
+The OpenXR API is the only api that allows FreePIE to block all mappings of controller buttons to ingame actions (done per default).
 
 This way the profile can be freely defined without accidentally triggering other ingame actions (like shooting the rocket launcher at your feets when you actually wanted to grab the pistol).
 
 If you just want to enhance the existing interaction mapping of for instance UEVR or any other game/application just use:
-openVR.configureInput(OpenXR_All)
+`openVR.configureInput(OpenXR_All)`
 
 
 ## Gestures
@@ -24,9 +24,9 @@ Each gesture
 ```
  - can have haptic feedback (e.g. when the gesture is validating, entered, hold and left)*
   - e.g. `gestureTracker.holsterInventoryLeft.validating` and/or `touchValidating` -> played when the gesture is entered and awaiting further confirmation (time, grip or trigger)
-         `gestureTracker.holsterInventoryLeft.enter and/or touchEnter` -> played when gesture is entered (good for individual shots)
-         `gestureTracker.holsterInventoryLeft.hold` and/or `touchHold` -> played while within the gesture (good for machine guns)
-         `gestureTracker.holsterInventoryLeft.leave` and/or `touchLeave` -> played when leaving the gesture (when spinning down a chaingun)
+         `gestureTracker.holsterInventoryLeft.haptics.enter` and/or `haptics.touchEnter` -> played when gesture is entered (good for individual shots)
+         `gestureTracker.holsterInventoryLeft.haptics.hold` and/or `haptics.touchHold` -> played while within the gesture (good for machine guns)
+         `gestureTracker.holsterInventoryLeft.haptics.leave` and/or `haptics.touchLeave` -> played when leaving the gesture (when spinning down a chaingun)
   - touch* haptics are for the controller
   - the others are for bhaptics
   - see below for predefined haptics
@@ -90,8 +90,7 @@ Each gesture
 </tbody>
 </table>
 
-
-## Location-based Gestures 
+### Location-based Gestures 
 
 Besides the predefined gestures, additional location based gestures can be added like this:
 ```
@@ -114,9 +113,10 @@ The coordinate system of the camera is defined as this:
  - z-axis describes the offset forwards (negative) and backwards (positive)
 
 **Examples:**
- - directly in front of you eyes: (0, 0, -0.2)
+ - directly in front of your eyes: (0, 0, -0.2)
  - on top of your head (0, 0.2, 0)
  - left of your head (-0.2, 0, 0)
+
 
 ## GestureSets 
 
@@ -127,9 +127,9 @@ For instance, walking and driving scenes.
 To define these scenes more independently, you can create separate and individual gesture trackers:
  - `alternateTracker = gestureSets.createGestureSet("test", weaponInventory)`
 
-The first parameter is the name for the gesture set, the second an inventory object (use the default or create your own with `inv = Inventory())`.
+The first parameter is the name for the gesture set, the second an inventory object (use the default or create your own with `inv = Inventory()`.
 
-Additional custom gesture have to be created individually for each gesture set as well.
+Additional custom gestures have to be created individually for each gesture set as well.
 
 To switch the current gesture set, assign a `ModeSwitch(gestureSets.mode, "test")`
 action with the gesture set name to a gesture.
@@ -139,7 +139,6 @@ Be aware, to add another action to the new gesture set to switch back (use 0 or 
 Voice Commands, VR to Mouse/Gamepad are currently global and "survive" a gesture set switch.
 
 Therefore, each gesture set can have an enter and leave action to configure the right mappings:
-
 ```
  - alternateTracker.enter = ModeSwitch(vrToMouse.mode, VrToMouse_Headset)
  - alternateTracker.leave = ModeSwitch(vrToMouse.mode, VrToMouse_None)
@@ -150,7 +149,7 @@ Therefore, each gesture set can have an enter and leave action to configure the 
 
 The **"v2k"** handles all voice commands.
 
-Simply add all required commands like this: v2k.addCommand("Save", KeyPress(Key.F5), "Voice Feedback").
+Simply add all required commands like this: `v2k.addCommand("Save", KeyPress(Key.F5), "Voice Feedback")`.
 
  - first parameter is the word to say to activate the command
  - second parameter is the action to perform
@@ -163,42 +162,30 @@ Simply add all required commands like this: v2k.addCommand("Save", KeyPress(Key.
 
  - `Action()` if you just need an empty action doing nothing except haptics
 
- - `KeyQuickPress(Key.A)` or `KeyQuickPress([Key.Shift, Key.A])`: to press a single button/multiple buttons when entering a gesture
+ - Key Actions:
+   - `KeyQuickPress(Key.A)` or `KeyQuickPress([Key.Shift, Key.A])`: to press a single button/multiple buttons when entering a gesture
+   - `KeyPress(Key.A)` or `KeyPress([Key.Shift, Key.A])`: to hold down a single button/multiple buttons while within a gesture and releasing them when leaving the gesture (voice commands hold for a fixed duration)
+   - `KeyToggle(Key.A)` or `KeyToggle([Key.Shift, Key.A])`: to press a single button/multiple buttons when entering a gesture and pressing it again when leaving it (voice commands only press it once and are thus equal to KeyQuickPress)
+   - `KeySwitchState(Key.A)` or `KeySwitchState([Key.Shift, Key.A])`: to press and hold down a button/multiple buttons when entering until entering the gesture again.
+   - `KeySetState(Key.A, True)` or `KeySwitchState([Key.Shift, Key.A], False)`: to set the state of the given keys to pressed (True) or releasd (False)
 
- - `KeyPress(Key.A)` or `KeyPress([Key.Shift, Key.A])`: to hold down a single button/multiple buttons while within a gesture and releasing them when leaving the gesture (voice commands hold for a fixed duration)
+ - Mouse Actions: (valid parameters: 0. left 1: right, 2: middle mouse button, -1: for scroll down, and -2: for scroll up)
+   - `MouseQuickPress(0)`: to press a single button when entering a gesture
+   - `MousePress(0)`: to hold down a mouse button while within a gesture and releasing it when leaving the gesture (voice commands hold for a fixed duration)
+   - `MouseToggle(0)`: to press a single button when entering a gesture and pressing it again when leaving it (voice commands only press it once and are thus equal to MouseQuickPress)
+   - `MouseSwitchState(0)`: to press and hold down a button when entering until entering the gesture again.
+   - `MouseSetState(0, True)`: to set the state of the given mouse button to pressed (`True`) or releasd (`False`)
 
- - `KeyToggle(Key.A)` or `KeyToggle([Key.Shift, Key.A])`: to press a single button/multiple buttons when entering a gesture and pressing it again when leaving it (voice commands only press it once and are thus equal to KeyQuickPress)
+ - Gamepad Actions: (To use a **gamepad action**, you have to first initialize the gamepade controller with `vrToGamepad.setController(VigemController.XBoxController)`)
+   - `GamepadQuickPress(VigemButton.A)` or `GamepadQuickPress([VigemButton.A, VigemButton.X])`: to press a single button/multiple buttons when entering a gesture
+   - `GamepadPress(VigemButton.A)` or `GamepadPress([VigemButton.Shift, VigemButton.A])`: to hold down a single button/multiple buttons while within a gesture and releasing them when leaving the gesture *(voice commands hold for a fixed duration)*
+   - `GamepadToggle(VigemButton.A)` or `KeyToggle([VigemButton.X, VigemButton.A])`: to press a single button/multiple buttons when entering a gesture and pressing it again when leaving it (voice commands only press it once and are thus equal to GamepadQuickPress)
+   - `GamepadSwitchState(VigemButton.A)`: to press and hold down a button when entering until entering the gesture again.
+   - `GamepadSetState(VigemButton.A, True)`: to set the state of the given button to pressed (`True`) or releasd (`False`)
 
- - `KeySwitchState(Key.A)` or `KeySwitchState([Key.Shift, Key.A])`: to press and hold down a button/multiple buttons when entering until entering the gesture again.
-
- - `KeySetState(Key.A, True)` or `KeySwitchState([Key.Shift, Key.A], False)`: to set the state of the given keys to pressed (True) or releasd (False)
-
- - `MouseQuickPress(0)`: to press a single button when entering a gesture
-
- - `MousePress(0)`: to hold down a mouse button while within a gesture and releasing it when leaving the gesture (voice commands hold for a fixed duration)
-
- - `MouseToggle(0)`: to press a single button when entering a gesture and pressing it again when leaving it (voice commands only press it once and are thus equal to MouseQuickPress)
-
- - `MouseSwitchState(0)`: to press and hold down a button when entering until entering the gesture again.
-As for `Key*` you can also multiple mouse buttons
-       
-       0. left 1: right, 2: middle mouse button, -1: for scroll down, and -2: for scroll up
-
- - `MouseSetState(0, True)`: to set the state of the given mouse button to pressed (`True`) or releasd (`False`)
-
- - `GamepadQuickPress(VigemButton.A)` or `GamepadQuickPress([VigemButton.A, VigemButton.X])`: to press a single button/multiple buttons when entering a gesture
-
- - `GamepadPress(VigemButton.A)` or `GamepadPress([VigemButton.Shift, VigemButton.A])`: to hold down a single button/multiple buttons while within a gesture and releasing them when leaving the gesture *(voice commands hold for a fixed duration)*
-
- - `GamepadToggle(VigemButton.A)` or `KeyToggle([VigemButton.X, VigemButton.A])`: to press a single button/multiple buttons when entering a gesture and pressing it again when leaving it (voice commands only press it once and are thus equal to GamepadQuickPress)
-
- - `GamepadSwitchState(VigemButton.A)`: to press and hold down a button when entering until entering the gesture again.
-
-    To use a **gamepad action**, you have to first initialize the gamepade controller with `vrToGamepad.setController(VigemController.XBoxController)`.
-
- - `InventorySelect(inventory, item)`: activates the given inventory item (numeric index)
-
- - `InventoryReplace(inventory, newItem)`: replaces the current item of inventory with the newItem (used for more dynamic inventories such as DeusEx or L4D)
+ - Inventory Actions
+   - `InventorySelect(inventory, item)`: activates the given inventory item (numeric index)
+   - `InventoryReplace(inventory, newItem)`: replaces the current item of inventory with the newItem (used for more dynamic inventories such as DeusEx or L4D)
 
  - `MultiAction([action1, action2])`: if you want to perform multiple actions at the same time (not required to press multiple buttons)
 
@@ -211,24 +198,27 @@ As for `Key*` you can also multiple mouse buttons
  - `ActionSplit([actionEnter, actionLeave])`: if you want to execute different simple actions when entering or leaving a gesture
 
  - `ResetAction()`: resets the head height for duck detection
- 
-### Modes:
+
+
+## Modes:
 You can define a number of independent modes to assign multiple actions to the same gesture.
 
 To create a mode simply create it like this: `myMode = Mode()`
 
 The default value is 0.
 
-### Actions:
+Assign a different value by code using `myMode.current = "test"` or use one of the following actions:
+
  - `ModeSwitch(myMode, key)`: activates the mode's key. This can be a number or a more understandable string.
 
  - `ModeSwitchWithReset(myMode, key, resetKey)`: similar to ModeSwitch but resets to the mode's original key when leaving (`resetKey = None`) or to resetKey. Be aware that this action does not work with the following ModeBasedAction.
 
  - `ModeCopy(copyToMode, copyFromMode)`: sets the copyToMode's key to the one currently selected in copyFromMode
 
- - `ModeBasedAction(myMode, {key2: action0, key1: action1}, defaultAction)`: selects the action with the current active mode's key or the optional defaultAction if no action can be found for the current key.
+ - `ModeBasedAction(myMode, {key0: action0, key1: action1}, defaultAction)`: selects the action with the current active mode's key or the optional defaultAction if no action can be found for the current key.
 
-### Combined actions:
+
+## Combined actions:
 Sometimes you want to require multiple gestures for an action.
 
 Create a counter and specify the number of simultaneous gestures: `myCounter = Counter(2)`
@@ -263,6 +253,7 @@ The forth parameter (optional) gives the item a name, by which to access it.
  - `Haptics_Shotgun`:       Single shot with strong feedback
  - `Haptics_AutoShotgun`:   Continuous shots with strong feedback
  - `Haptics_Laser`:         Continuous stream with medium feedback
+ - `Haptics_Phaser`:        Continuous stream with low feedback
 
 The weaponInventory is based on the afformentioned mode and thus can also be used for a ModeBasedAction
 
@@ -271,7 +262,9 @@ The weaponInventory is based on the afformentioned mode and thus can also be use
 
 The **"hapticPlayer"** handles bhaptics feedback.
 
-Use it to load additional behaptics presets: `hapticPlayer.registerFromScripts("Chainsword_L", 0.24)`.
+Use it to load additional BHaptics presets: `hapticPlayer.registerFromScripts("Chainsword_L", 0.24)`.
+
+The first parameter is the file name, the second parameter the duration of the haptics.
 
 Haptics are loaded from scripts\haptics.
 
@@ -287,12 +280,12 @@ Multiple haptics can be assigned using a list (e.g. to asign vest and arm haptic
  - `Equip From Left to Right`
  - `Equip From Right to Left`
  - `Equip From Right to Right`
- - `Holster Left`
- - `Holster Right`
  - `Force Pull_L`
  - `Force Push_L`
  - `Force Pull_R`
  - `Force Push_R`
+ - `Holster Left`
+ - `Holster Right`
  - `Laser`
  - `Light Left`
  - `Light Right`
@@ -305,7 +298,6 @@ The following are used from https://www.nexusmods.com/warhammer40000battlesister
  - `RecoilMeleeVest_L`
  - `RecoilMeleeVest_R`
  - `RecoilShotgunVest_R`
-
 
 
 ## Touch Haptics 
@@ -324,19 +316,19 @@ Available touch haptics:
  - `Touch_Validating_Right`: short burst right hand
  - `Touch_Enter_Left`: short strong burst left hand
  - `Touch_Enter_Right`: short strong burst right hand
- - `Touch_Melee_Left`
- - `Touch_Melee_Right`
+ - `Touch_Melee_Left`: strong burst left hand with a pause
+ - `Touch_Melee_Right`: strong burst right hand with a pause
 
 
 ## VR to Mouse Mapping
 
-The "vrToMouse" handles mapping of head or controller movements to mouse movements.
+The **"vrToMouse"** handles mapping of head or controller movements to mouse movements.
 
 Additionally, the right stick is activated to move the mouse as well.
 
-Set vrToMouse.useRightController = False in case you want to use the left stick.
+Set `vrToMouse.useRightController = False` in case you want to use the left stick.
 
-Use vrToMouse.mode to toggle between the different modes (e.g. vrToMouse.mode.current = 1 or use ModeSwitch* actions to toggle them during gameplay):
+Use `vrToMouse.mode` to toggle between the different modes (e.g. `vrToMouse.mode.current = VrToMouse_Headset` or use ModeSwitch* actions to toggle them during gameplay):
 
  - `VrToMouse_None (0)`: No mouse output
  - `VrToMouse_Headset (1)`: Headset to mouse
@@ -346,17 +338,18 @@ Use vrToMouse.mode to toggle between the different modes (e.g. vrToMouse.mode.cu
 
 For Left and right controller, the difference in yaw and pitch to the head is also communicated to reshade for the detached aiming shader to do its magic.
 
-- Use `vrToMouse.enableYawPitch = False` if not to communicate yaw and pitch.
-- Use `vrToMouse.enableRoll = True` if also to communicate the roll of the head.
-- Change `vrToMouse.mouseSensitivityX = 800` to adjust sensitivity in x.
-- Change `vrToMouse.mouseSensitivityY = 800` to adjust sensitivity in y.
-- Change `vrToMouse.stickMultiplierX = 1` to adjust the multiplier for the stick.
-- Change `vrToMouse.stickMultiplierY = 1` to adjust the multiplier for the stick.
+ - Use `vrToMouse.enableYawPitch.current = False` if not to communicate yaw and pitch.
+ - Use `vrToMouse.enableRoll.current = True` if also to communicate the roll of the head.
+ - Change `vrToMouse.mouseSensitivityX = 800` to adjust sensitivity in x.
+ - Change `vrToMouse.mouseSensitivityY = 800` to adjust sensitivity in y.
+ - Change `vrToMouse.stickMultiplierX = 1` to adjust the multiplier for the stick.
+ - Change `vrToMouse.stickMultiplierY = 1` to adjust the multiplier for the stick.
 
 
 ## VR to Gamepad Mapping 
 
-Initialize it with vrToGamepad.setController(VigemController.XBoxController) (or VigemController.DualShockController).
+Initialize it with `vrToGamepad.setController(VigemController.XBoxController)` (or VigemController.DualShockController).
+Gamepad support requires to install this first: https://github.com/nefarius/ViGEmBus/releases/tag/v1.22.0
 
 It contains multiple modes to steer the mapping (use ModeSwitch* actions to toggle them during gameplay):
  - `vrToGamepad.leftTriggerMode` and `vrToGamepad.rightTriggerMode` handle mapping from controller to gamepad triggers
@@ -368,8 +361,7 @@ For all of those:
  - `1`: Left trigger or stick
  - `2`: Right trigger or stick
 
-For the dpad an additional vrToGamepad.dpadThreshold can be defined.
-
+For the dpad an additional `vrToGamepad.dpadThreshold` can be defined.
 
 
 ## VR Roomscale Mapping
@@ -402,7 +394,6 @@ vrRoomscale.vertical.sensitivity = 0.5
 ```
 
 Each axis has its own mode to activate or deactivate. This can be done directly in the script (e.g. vrRoomscale.yaw.mode.current = 1) or bound to a gesture:
-
 
 ```
 # switch headset: left stick

@@ -116,3 +116,17 @@ class GamepadSwitchState(GamepadAction):
     def reset(self):
         self.setKeyUp()
         self._down = False
+
+#******************************************************
+# Action class to set the state of a key when entering 
+#******************************************************
+class GamepadSetState(GamepadAction):
+    def __init__(self, keys, state):
+        GamepadAction.__init__(self, keys)
+        self.stateToSet = state
+
+    def enter(self, currentTime, fromVoiceRecognition):
+        if self.stateToSet:
+            self.setKeyDown()
+        else:
+            self.setKeyUp()
