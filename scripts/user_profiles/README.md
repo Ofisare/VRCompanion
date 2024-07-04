@@ -23,15 +23,43 @@ Each gesture
        gestureTracker.lightLeft.triggerAction = KeyPress(Key.G)
 ```
  - can have haptic feedback (e.g. when the gesture is validating, entered, hold and left)*
-  - e.g. `gestureTracker.holsterInventoryLeft.validating` and/or `touchValidating` -> played when the gesture is entered and awaiting further confirmation (time, grip or trigger)
-         `gestureTracker.holsterInventoryLeft.haptics.enter` and/or `haptics.touchEnter` -> played when gesture is entered (good for individual shots)
-         `gestureTracker.holsterInventoryLeft.haptics.hold` and/or `haptics.touchHold` -> played while within the gesture (good for machine guns)
-         `gestureTracker.holsterInventoryLeft.haptics.leave` and/or `haptics.touchLeave` -> played when leaving the gesture (when spinning down a chaingun)
-  - touch* haptics are for the controller
-  - the others are for bhaptics
-  - see below for predefined haptics
+
+**Example**
+
+  <table>
+    <thead>
+      <tr><th>Gesture</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>gestureTracker.holsterInventoryLeft.validating</td>
+        <td rowspan="2">played when the gesture is entered and awaiting further confirmation (time, grip or trigger)</td>
+      </tr>
+      <tr><td>gestureTracker.holsterInventoryLeft.touchValidating</td></tr>
+      <tr>
+        <td>gestureTracker.holsterInventoryLeft.haptics.enter</td>
+        <td rowspan="2">played when gesture is entered (good for individual shots)</td>
+      </tr>
+      <tr><td>gestureTracker.holsterInventoryLeft.haptics.touchEnter</td></tr>
+      <tr>
+        <td>gestureTracker.holsterInventoryLeft.haptics.hold</td>
+        <td rowspan="2">played while within the gesture (good for machine guns)</td></tr>
+      <tr><td>gestureTracker.holsterInventoryLeft.haptics.touchHold</td></tr>
+      <tr>
+        <td>gestureTracker.holsterInventoryLeft.haptics.leave</td>
+        <td rowspan="2">played when leaving the gesture (when spinning down a chaingun)</td>
+      </tr>
+      <tr><td>gestureTracker.holsterInventoryLeft.haptics.touchLeave</td></tr>
+    </tbody>
+  </table>
+  
+ > - touch* haptics are for the controller
+ > - the others are for bhaptics
+ > - see below for predefined haptics
 
 ### List of all gestures:
+---
+
 <table>
 <thead><tr><th>Gesture</th><th>Description</th></tr></thead>
 <tbody>
@@ -91,6 +119,7 @@ Each gesture
 </table>
 
 ### Location-based Gestures 
+---
 
 Besides the predefined gestures, additional location based gestures can be added like this:
 ```
