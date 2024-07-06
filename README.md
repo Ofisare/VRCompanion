@@ -65,5 +65,16 @@ It is useful to use a wider screen resolution (vorpx allows to create virtual sc
 
 Depending on the DirectX Version you might have to check flip pitch and/or roll to get the correct movement of the image according to controller movement
 
+# Acknowledgements
+My thanks go to all people of the Flat2VR discord who helped to shape this idea to what it is today.
+That also includes you who is reading this, thank you for your support :-)
+Special thanks go also to the creators of FreePIE and drowhunter who got me started with this incredible tool.
+
+A list of all contributors to this repository:
+ - Ofisare
+ - WurmVR (profiles)
+ - de3sw2aq1
+ - drowhunter
+
 # Additional links
 [Discord](https://discord.com/channels/747967102895390741/1193837770767081492/1193837770767081492)

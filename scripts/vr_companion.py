@@ -41,8 +41,6 @@ except ImportError:
     skipBhaptics = True
     pass
 
-skipUpdate = False
-
 #***********************************************************************************************
 # Function not actually used, but required so that freepie loads all required plugins correctly
 #***********************************************************************************************
@@ -199,6 +197,7 @@ class SettingsForm(Form):
         self.startButton.Dock = DockStyle.Top
         self.startButton.Click += self.buttonPressed
         
+        skipUpdate = False
         if "dev" in settings and bool(settings["dev"]):
             skipUpdate = True
         
