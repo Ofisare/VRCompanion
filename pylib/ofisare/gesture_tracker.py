@@ -63,8 +63,8 @@ class GestureTracker:
         self.triggerRight = InventoryGesture(-0.6, -0.4, inventory)     # negative right trigger press
         self.upperAreaLeft = Gesture(0.0, 0.1)                          # head y - left controller y
         self.upperAreaRight = Gesture(0.0, 0.1)                         # head y - right controller y
-        self.useLeft = Gesture(-0.7, -0.5)                              # openVR.leftTouchPose.left.y, basically checking whether the left palm is facing down
-        self.useRight = Gesture(-0.7, -0.5)                             # -openVR.rightTouchPose.left.y, basically checking whether the right palm is facing down
+        self.useLeft = Gesture(-0.7, -0.5)                              # vr.leftTouchPose.left.y, basically checking whether the left palm is facing down
+        self.useRight = Gesture(-0.7, -0.5)                             # -vr.rightTouchPose.left.y, basically checking whether the right palm is facing down
         
         self.leftMeleeAltThreshold = -0.7               # the threshold for the forward vector y coordinate
         self.rightMeleeAltThreshold = -0.7              # the threshold for the forward vector y coordinate
@@ -185,100 +185,100 @@ class GestureTracker:
                         
     def update(self, currentTime, deltaTime):        
         # update orientation and internal state
-        if environment.openVR.isMounted == False:
+        if environment.vr.isMounted == False:
             return
         
-        leftValidation = GestureValidation(environment.openVR.leftTrigger, environment.openVR.leftGrip)
-        rightValidation = GestureValidation(environment.openVR.rightTrigger, environment.openVR.rightGrip)
+        leftValidation = GestureValidation(environment.vr.leftTrigger, environment.vr.leftGrip)
+        rightValidation = GestureValidation(environment.vr.rightTrigger, environment.vr.rightGrip)
         noneValidation = GestureValidation(1,1)
         
         item = self._inventory.get()
         
         if self.lowerAreaLeft.enabled:
-            self.lowerAreaLeft.update(currentTime, environment.openVR.leftTouchPose.position.y - environment.openVR.headPose.position.y, leftValidation)
+            self.lowerAreaLeft.update(currentTime, environment.vr.leftTouchPose.position.y - environment.vr.headPose.position.y, leftValidation)
         
         if self.lowerAreaRight.enabled:
-            self.lowerAreaRight.update(currentTime, environment.openVR.rightTouchPose.position.y - environment.openVR.headPose.position.y, rightValidation)
+            self.lowerAreaRight.update(currentTime, environment.vr.rightTouchPose.position.y - environment.vr.headPose.position.y, rightValidation)
         
         if self.upperAreaLeft.enabled:
-            self.upperAreaLeft.update(currentTime, environment.openVR.headPose.position.y - environment.openVR.leftTouchPose.position.y, leftValidation)
+            self.upperAreaLeft.update(currentTime, environment.vr.headPose.position.y - environment.vr.leftTouchPose.position.y, leftValidation)
         
         if self.upperAreaRight.enabled:
-            self.upperAreaRight.update(currentTime, environment.openVR.headPose.position.y - environment.openVR.rightTouchPose.position.y, rightValidation)
+            self.upperAreaRight.update(currentTime, environment.vr.headPose.position.y - environment.vr.rightTouchPose.position.y, rightValidation)
         
         if self.aimPistol.enabled:
             # calculate distance between hands to determine gun pose
-            dx = environment.openVR.leftTouchPose.position.x - environment.openVR.rightTouchPose.position.x
-            dy = environment.openVR.leftTouchPose.position.y - environment.openVR.rightTouchPose.position.y
-            dz = environment.openVR.leftTouchPose.position.z - environment.openVR.rightTouchPose.position.z
+            dx = environment.vr.leftTouchPose.position.x - environment.vr.rightTouchPose.position.x
+            dy = environment.vr.leftTouchPose.position.y - environment.vr.rightTouchPose.position.y
+            dz = environment.vr.leftTouchPose.position.z - environment.vr.rightTouchPose.position.z
             d = dx*dx + dy*dy + dz*dz
             
             self.aimPistol.update(currentTime, d, leftValidation) 
                         
         if self.aimRifleRight.enabled:
             # prioritize pistol aiming
-            if self.aimPistol.inGesture or dotProduct(environment.openVR.leftTouchPose.forward, environment.openVR.headPose.forward) < 0.5:
+            if self.aimPistol.inGesture or dotProduct(environment.vr.leftTouchPose.forward, environment.vr.headPose.forward) < 0.5:
                 self.aimRifleRight.update(currentTime, 0, rightValidation)
             else:
                 # calculate distance between left hand and head to determine rifle pose
-                dx = environment.openVR.rightTouchPose.position.x - environment.openVR.headPose.position.x
-                dz = environment.openVR.rightTouchPose.position.z - environment.openVR.headPose.position.z
+                dx = environment.vr.rightTouchPose.position.x - environment.vr.headPose.position.x
+                dz = environment.vr.rightTouchPose.position.z - environment.vr.headPose.position.z
                 d = dx*dx + dz*dz
                 
                 self.aimRifleRight.update(currentTime, -d, rightValidation)
             
         if self.aimRifleLeft.enabled:
             # prioritize pistol and right rifle aiming
-            if self.aimPistol.inGesture or self.aimRifleRight.inGesture or dotProduct(environment.openVR.leftTouchPose.forward, environment.openVR.headPose.forward) < 0.5:
+            if self.aimPistol.inGesture or self.aimRifleRight.inGesture or dotProduct(environment.vr.leftTouchPose.forward, environment.vr.headPose.forward) < 0.5:
                 self.aimRifleLeft.update(currentTime, 0, leftValidation)
             else:
                 # calculate distance between left hand and head to determine rifle pose
-                dx = environment.openVR.leftTouchPose.position.x - environment.openVR.headPose.position.x
-                dz = environment.openVR.leftTouchPose.position.z - environment.openVR.headPose.position.z
+                dx = environment.vr.leftTouchPose.position.x - environment.vr.headPose.position.x
+                dz = environment.vr.leftTouchPose.position.z - environment.vr.headPose.position.z
                 d = dx*dx + dz*dz
                 
                 self.aimRifleLeft.update(currentTime, -d, leftValidation)
         
         # buttons
         if self.buttonA.enabled:
-            self.buttonA.update(currentTime, -environment.openVR.a, rightValidation)
+            self.buttonA.update(currentTime, -environment.vr.a, rightValidation)
         if self.buttonB.enabled:
-            self.buttonB.update(currentTime, -environment.openVR.b, rightValidation)
+            self.buttonB.update(currentTime, -environment.vr.b, rightValidation)
         if self.buttonRightStick.enabled:
-            self.buttonRightStick.update(currentTime, -environment.openVR.rightStick, rightValidation)
+            self.buttonRightStick.update(currentTime, -environment.vr.rightStick, rightValidation)
             
         if self.buttonX.enabled:
-            self.buttonX.update(currentTime, -environment.openVR.x, leftValidation)
+            self.buttonX.update(currentTime, -environment.vr.x, leftValidation)
         if self.buttonY.enabled:
-            self.buttonY.update(currentTime, -environment.openVR.y, leftValidation)
+            self.buttonY.update(currentTime, -environment.vr.y, leftValidation)
         if self.buttonLeftStick.enabled:
-            self.buttonLeftStick.update(currentTime, -environment.openVR.leftStick, leftValidation)
+            self.buttonLeftStick.update(currentTime, -environment.vr.leftStick, leftValidation)
             
         if self.buttonLeftStickUp.enabled:
-            self.buttonLeftStickUp.update(currentTime, -environment.openVR.leftStickAxes.y, leftValidation)
+            self.buttonLeftStickUp.update(currentTime, -environment.vr.leftStickAxes.y, leftValidation)
         if self.buttonLeftStickDown.enabled:
-            self.buttonLeftStickDown.update(currentTime, environment.openVR.leftStickAxes.y, leftValidation)
+            self.buttonLeftStickDown.update(currentTime, environment.vr.leftStickAxes.y, leftValidation)
         if self.buttonLeftStickLeft.enabled:
-            self.buttonLeftStickLeft.update(currentTime, environment.openVR.leftStickAxes.x, leftValidation)
+            self.buttonLeftStickLeft.update(currentTime, environment.vr.leftStickAxes.x, leftValidation)
         if self.buttonLeftStickRight.enabled:
-            self.buttonLeftStickRight.update(currentTime, -environment.openVR.leftStickAxes.x, leftValidation)
+            self.buttonLeftStickRight.update(currentTime, -environment.vr.leftStickAxes.x, leftValidation)
                 
-        leftStick = math.sqrt(environment.openVR.leftStickAxes.x*environment.openVR.leftStickAxes.x + environment.openVR.leftStickAxes.y*environment.openVR.leftStickAxes.y)
+        leftStick = math.sqrt(environment.vr.leftStickAxes.x*environment.vr.leftStickAxes.x + environment.vr.leftStickAxes.y*environment.vr.leftStickAxes.y)
         if self.buttonLeftStickInnerRing.enabled:
             self.buttonLeftStickInnerRing.update(currentTime, leftStick, leftValidation)
         if self.buttonLeftStickOuterRing.enabled:
             self.buttonLeftStickOuterRing.update(currentTime, -leftStick, leftValidation)
          
         if self.buttonRightStickUp.enabled:
-            self.buttonRightStickUp.update(currentTime, -environment.openVR.rightStickAxes.y, rightValidation)
+            self.buttonRightStickUp.update(currentTime, -environment.vr.rightStickAxes.y, rightValidation)
         if self.buttonRightStickDown.enabled:
-            self.buttonRightStickDown.update(currentTime, environment.openVR.rightStickAxes.y, rightValidation)        
+            self.buttonRightStickDown.update(currentTime, environment.vr.rightStickAxes.y, rightValidation)        
         if self.buttonRightStickLeft.enabled:
-            self.buttonRightStickLeft.update(currentTime, environment.openVR.rightStickAxes.x, rightValidation)            
+            self.buttonRightStickLeft.update(currentTime, environment.vr.rightStickAxes.x, rightValidation)            
         if self.buttonRightStickRight.enabled:
-            self.buttonRightStickRight.update(currentTime, -environment.openVR.rightStickAxes.x, rightValidation)
+            self.buttonRightStickRight.update(currentTime, -environment.vr.rightStickAxes.x, rightValidation)
         
-        rightStick = math.sqrt(environment.openVR.rightStickAxes.x*environment.openVR.rightStickAxes.x + environment.openVR.rightStickAxes.y*environment.openVR.rightStickAxes.y)
+        rightStick = math.sqrt(environment.vr.rightStickAxes.x*environment.vr.rightStickAxes.x + environment.vr.rightStickAxes.y*environment.vr.rightStickAxes.y)
         if self.buttonRightStickInnerRing.enabled:
             self.buttonRightStickInnerRing.update(currentTime, rightStick, rightValidation)
         if self.buttonRightStickOuterRing.enabled:
@@ -286,10 +286,10 @@ class GestureTracker:
         
         # head based duck support
         if self.duck.enabled:
-            self.duck.update(currentTime, environment.openVR.headPose.position.y - environment.headController.standingHeight, noneValidation)
+            self.duck.update(currentTime, environment.vr.headPose.position.y - environment.headController.standingHeight, noneValidation)
         
         # head based lean support
-        roll = getRoll(environment.openVR.headPose)
+        roll = getRoll(environment.vr.headPose)
         if self.leanLeft.enabled:
             self.leanLeft.update(currentTime, roll - environment.rollCenter, noneValidation)
         
@@ -298,41 +298,41 @@ class GestureTracker:
 
         # left hand based use
         if self.useLeft.enabled:
-            self.useLeft.update(currentTime, environment.openVR.leftTouchPose.left.y, leftValidation)            
+            self.useLeft.update(currentTime, environment.vr.leftTouchPose.left.y, leftValidation)            
                             
         # right hand based use
         if self.useRight.enabled:
-            self.useRight.update(currentTime, -environment.openVR.rightTouchPose.left.y, rightValidation)
+            self.useRight.update(currentTime, -environment.vr.rightTouchPose.left.y, rightValidation)
         
         # check location gestures for left hand
         for gesture in self._locationBasedGesturesLeft:
             if gesture.enabled:
-                gestureY = environment.openVR.headPose.position.y + gesture.offset.y
-                gestureX = environment.openVR.headPose.position.x + environment.openVR.headPose.left.x * gesture.offset.x + environment.openVR.headPose.forward.x * gesture.offset.z
-                gestureZ = environment.openVR.headPose.position.z + environment.openVR.headPose.left.z * gesture.offset.x + environment.openVR.headPose.forward.z * gesture.offset.z
-                dx = environment.openVR.leftTouchPose.position.x - gestureX
-                dy = environment.openVR.leftTouchPose.position.y - gestureY
-                dz = environment.openVR.leftTouchPose.position.z - gestureZ
+                gestureY = environment.vr.headPose.position.y + gesture.offset.y
+                gestureX = environment.vr.headPose.position.x + environment.vr.headPose.left.x * gesture.offset.x + environment.vr.headPose.forward.x * gesture.offset.z
+                gestureZ = environment.vr.headPose.position.z + environment.vr.headPose.left.z * gesture.offset.x + environment.vr.headPose.forward.z * gesture.offset.z
+                dx = environment.vr.leftTouchPose.position.x - gestureX
+                dy = environment.vr.leftTouchPose.position.y - gestureY
+                dz = environment.vr.leftTouchPose.position.z - gestureZ
                 d = dx*dx + dy*dy + dz*dz    
                 gesture.update(currentTime, d, leftValidation)        
            
         # check location gestures for right hand
         for gesture in self._locationBasedGesturesRight:
             if gesture.enabled:
-                gestureY = environment.openVR.headPose.position.y + gesture.offset.y
-                gestureX = environment.openVR.headPose.position.x + environment.openVR.headPose.left.x * gesture.offset.x + environment.openVR.headPose.forward.x * gesture.offset.z
-                gestureZ = environment.openVR.headPose.position.z + environment.openVR.headPose.left.z * gesture.offset.x + environment.openVR.headPose.forward.z * gesture.offset.z
-                dx = environment.openVR.rightTouchPose.position.x - gestureX
-                dy = environment.openVR.rightTouchPose.position.y - gestureY
-                dz = environment.openVR.rightTouchPose.position.z - gestureZ
+                gestureY = environment.vr.headPose.position.y + gesture.offset.y
+                gestureX = environment.vr.headPose.position.x + environment.vr.headPose.left.x * gesture.offset.x + environment.vr.headPose.forward.x * gesture.offset.z
+                gestureZ = environment.vr.headPose.position.z + environment.vr.headPose.left.z * gesture.offset.x + environment.vr.headPose.forward.z * gesture.offset.z
+                dx = environment.vr.rightTouchPose.position.x - gestureX
+                dy = environment.vr.rightTouchPose.position.y - gestureY
+                dz = environment.vr.rightTouchPose.position.z - gestureZ
                 d = dx*dx + dy*dy + dz*dz
                 gesture.update(currentTime, d, rightValidation)                 
         
         # left melee
         # calculate speed from left controller        
-        dx = environment.openVR.leftTouchPose.position.x - environment.leftController.x
-        dy = environment.openVR.leftTouchPose.position.y - environment.leftController.y
-        dz = environment.openVR.leftTouchPose.position.z - environment.leftController.z
+        dx = environment.vr.leftTouchPose.position.x - environment.leftController.x
+        dy = environment.vr.leftTouchPose.position.y - environment.leftController.y
+        dz = environment.vr.leftTouchPose.position.z - environment.leftController.z
         d = (dx*dx + dy*dy + dz*dz) / (deltaTime * deltaTime)
         leftMeleeAction = -1
         
@@ -340,8 +340,8 @@ class GestureTracker:
         if self.meleeLeft.enabled:
             leftMeleeAction = 0
         # check for alt melee gestures
-        if environment.openVR.leftTouchPose.forward.y < self.leftMeleeAltThreshold:
-            dot = dotProduct(environment.openVR.leftTouchPose.left, environment.openVR.headPose.forward)
+        if environment.vr.leftTouchPose.forward.y < self.leftMeleeAltThreshold:
+            dot = dotProduct(environment.vr.leftTouchPose.left, environment.vr.headPose.forward)
             # check for force push
             if self.meleeLeftAltPush.enabled and dot < -0.5:
                 leftMeleeAction = 2
@@ -374,9 +374,9 @@ class GestureTracker:
                 
         # right melee       
         # calculate speed from right controller
-        dx = environment.openVR.rightTouchPose.position.x - environment.rightController.x
-        dy = environment.openVR.rightTouchPose.position.y - environment.rightController.y
-        dz = environment.openVR.rightTouchPose.position.z - environment.rightController.z
+        dx = environment.vr.rightTouchPose.position.x - environment.rightController.x
+        dy = environment.vr.rightTouchPose.position.y - environment.rightController.y
+        dz = environment.vr.rightTouchPose.position.z - environment.rightController.z
         d = (dx*dx + dy*dy + dz*dz) / (deltaTime * deltaTime)
         rightMeleeAction = -1
                 
@@ -385,8 +385,8 @@ class GestureTracker:
             if self.meleeRight.enabled:
                 rightMeleeAction = 0
             # check for alt melee gestures
-            if environment.openVR.rightTouchPose.forward.y < self.rightMeleeAltThreshold:
-                dot = dotProduct(environment.openVR.rightTouchPose.left, environment.openVR.headPose.forward)
+            if environment.vr.rightTouchPose.forward.y < self.rightMeleeAltThreshold:
+                dot = dotProduct(environment.vr.rightTouchPose.left, environment.vr.headPose.forward)
                 # check for force push
                 if self.meleeRightAltPush.enabled and dot < -0.5:
                     rightMeleeAction = 2
@@ -419,16 +419,16 @@ class GestureTracker:
           
         # at the end check for trigger and grip, so previous gestures can use these 
         if self.triggerLeft.enabled:
-            self.triggerLeft.update(currentTime, -environment.openVR.leftTrigger, leftValidation)
+            self.triggerLeft.update(currentTime, -environment.vr.leftTrigger, leftValidation)
             
         if self.triggerRight.enabled:
             if item == None or item.trackFireWeapon:
-                self.triggerRight.update(currentTime, -environment.openVR.rightTrigger, rightValidation)
+                self.triggerRight.update(currentTime, -environment.vr.rightTrigger, rightValidation)
             else:
                 self.triggerRight.update(currentTime, 0, rightValidation)
                         
         if self.gripLeft.enabled:
-            self.gripLeft.update(currentTime, -environment.openVR.leftGrip, leftValidation)
+            self.gripLeft.update(currentTime, -environment.vr.leftGrip, leftValidation)
             
         if self.gripRight.enabled:
-            self.gripRight.update(currentTime, -environment.openVR.rightGrip, rightValidation)
+            self.gripRight.update(currentTime, -environment.vr.rightGrip, rightValidation)

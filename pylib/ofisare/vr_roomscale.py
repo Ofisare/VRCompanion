@@ -125,7 +125,7 @@ class VRRoomscale:
         if self.yaw.mode.current == 0 and self.pitch.mode.current == 0 and self.horizontal.mode.current == 0 or self.vertical.mode.current == 0:
             return;
             
-        yawHead, pitchHead = getYawPitch(environment.openVR.headPose)
+        yawHead, pitchHead = getYawPitch(environment.vr.headPose)
         # fix yaw > math.pi
         if self.yaw.current < yawHead - math.pi:
             yawHead = yawHead - 2 * math.pi
@@ -135,15 +135,15 @@ class VRRoomscale:
         self.updateCore(currentTime, deltaTime, self.yaw, yawHead)
         self.updateCore(currentTime, deltaTime, self.pitch, -pitchHead)
         
-        headOffset = subtract(environment.openVR.headPose.position, self.headOrigin)
+        headOffset = subtract(environment.vr.headPose.position, self.headOrigin)
         headOffset = rotateYaw(headOffset, -yawHead)
         
         self.updateCore(currentTime, deltaTime, self.horizontal, headOffset.x)
         self.updateCore(currentTime, deltaTime, self.vertical, -headOffset.z)
     
     def reset(self):
-        yawHead, pitchHead = getYawPitch(environment.openVR.headPose)
-        self.headOrigin = environment.openVR.headPose.position
+        yawHead, pitchHead = getYawPitch(environment.vr.headPose)
+        self.headOrigin = environment.vr.headPose.position
         
         self.yaw.current = yawHead
         self.yaw.center = yawHead

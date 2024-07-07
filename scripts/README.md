@@ -20,7 +20,7 @@ After the update, you have to restart FreePIE, so new functionality can be loade
 If a new version of FreePIE is required the script will communicate this with an error message.
 In that case, download the latest [complete build with scripts and profiles]https://github.com/Ofisare/VRCompanion/releases/tag/Release_2.0).
 
-Under `Settings > Plugins > Open VR` you can switch the vr engine to be used:
+Under `Settings > Plugins > Open VR` you can switch the vr Runtime to be used:
  - **OpenVR**: most compatible
  - **OpenXR**: only in 64bit version, has to be started before the game
  - **Oculus**: only for Oculus Rift (s) and Meta Quest connected via Cable and possibly Air Link (controller haptics might not be working)

@@ -55,33 +55,33 @@ class VRToMouse:
         pitchTarget = self._pitch
         
         # get head orientation
-        yawHead, pitchHead, rollHead = getYawPitchRoll(environment.openVR.headPose)
+        yawHead, pitchHead, rollHead = getYawPitchRoll(environment.vr.headPose)
         if self.mode.current == 1:
             yawTarget = yawHead
             pitchTarget = pitchHead            
         elif self.mode.current == 2:
             # left controller
             if self.useControllerOrientation:
-                yaw, pitch = getYawPitch(environment.openVR.leftTouchPose)
+                yaw, pitch = getYawPitch(environment.vr.leftTouchPose)
                 yawTarget = yaw + self._yawOffset
                 pitchTarget = pitch + self._pitchOffset
             else:
-                dx = environment.openVR.leftTouchPose.position.x - environment.openVR.headPose.position.x
-                dy = environment.openVR.leftTouchPose.position.y - environment.openVR.headPose.position.y
-                dz = environment.openVR.leftTouchPose.position.z - environment.openVR.headPose.position.z
+                dx = environment.vr.leftTouchPose.position.x - environment.vr.headPose.position.x
+                dy = environment.vr.leftTouchPose.position.y - environment.vr.headPose.position.y
+                dz = environment.vr.leftTouchPose.position.z - environment.vr.headPose.position.z
                 dh = math.sqrt(dx*dx + dz*dz)
                 yawTarget = math.pi + math.atan2(dz, dx) + self._yawOffset
                 pitchTarget = -math.atan2(dy, dh) + self._pitchOffset
         elif self.mode.current == 3:
             # right controller
             if self.useControllerOrientation:
-                yaw, pitch = getYawPitch(environment.openVR.rightTouchPose)
+                yaw, pitch = getYawPitch(environment.vr.rightTouchPose)
                 yawTarget = yaw + self._yawOffset
                 pitchTarget = pitch + self._pitchOffset
             else:
-                dx = environment.openVR.rightTouchPose.position.x - environment.openVR.headPose.position.x
-                dy = environment.openVR.rightTouchPose.position.y - environment.openVR.headPose.position.y
-                dz = environment.openVR.rightTouchPose.position.z - environment.openVR.headPose.position.z
+                dx = environment.vr.rightTouchPose.position.x - environment.vr.headPose.position.x
+                dy = environment.vr.rightTouchPose.position.y - environment.vr.headPose.position.y
+                dz = environment.vr.rightTouchPose.position.z - environment.vr.headPose.position.z
                 dh = math.sqrt(dx*dx + dz*dz)
                 yawTarget = math.pi + math.atan2(dz, dx) + self._yawOffset
                 pitchTarget = -math.atan2(dy, dh) + self._pitchOffset
@@ -129,11 +129,11 @@ class VRToMouse:
         
         if self.stickMode.current == 1:
             if self.useRightController:
-                deltaX = deltaX + environment.openVR.rightStickAxes.x * self.mouseSensitivityX * self.stickMultiplierX * deltaTime
-                deltaY = deltaY - environment.openVR.rightStickAxes.y * self.mouseSensitivityY * self.stickMultiplierY * deltaTime
+                deltaX = deltaX + environment.vr.rightStickAxes.x * self.mouseSensitivityX * self.stickMultiplierX * deltaTime
+                deltaY = deltaY - environment.vr.rightStickAxes.y * self.mouseSensitivityY * self.stickMultiplierY * deltaTime
             else:
-                deltaX = deltaX + environment.openVR.leftStickAxes.x * self.mouseSensitivityX * self.stickMultiplierX * deltaTime
-                deltaY = deltaY - environment.openVR.leftStickAxes.y * self.mouseSensitivityY * self.stickMultiplierY * deltaTime
+                deltaX = deltaX + environment.vr.leftStickAxes.x * self.mouseSensitivityX * self.stickMultiplierX * deltaTime
+                deltaY = deltaY - environment.vr.leftStickAxes.y * self.mouseSensitivityY * self.stickMultiplierY * deltaTime
         
         environment.mouse.deltaX = deltaX
         environment.mouse.deltaY = deltaY

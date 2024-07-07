@@ -14,7 +14,7 @@ Profiles are found in scripts/profiles and a default profile (WASD_Default.py).
 Custom profiles should be created in scripts/user_profiles which also contains a README.md for **How to define a profile**.
 
 ## Installation
- - download the [complete build with script and profiles](https://github.com/Ofisare/VRCompanion/releases/tag/Release_2.0)
+ - download the [complete build with script and profiles](https://github.com/Ofisare/VRCompanion/releases/latest)
  - unzip
  - start freepie
  - load scripts/vr_companion.py
@@ -28,7 +28,7 @@ Custom profiles should be created in scripts/user_profiles which also contains a
 The debug output should give current information about the orientation of the headset/controllers if everything is working.
 For OpenXR it is important to start the script before starting the game so the used OpenXR API Layer is correctly registered (closing the application unregisters the api layer again).
 
-Per default, OpenVR is used. Under Settings > Open VR you can select the
+Per default, OpenVR is used. Under Settings > VR you can select the
  - Oculus runtime (for Oculus Rift (s) and possibly Meta Quest over AirLink, but possibly no haptics),
  - OpenXR (experimental), and
  - OpenVR (most compatible).
