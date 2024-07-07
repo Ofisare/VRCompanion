@@ -426,7 +426,7 @@ def selectProfile():
               
 # initialization of state and constants
 if starting:
-    requiredVersion = "3.0"
+    requiredVersion = "2.0"
     compatibleVersion = True
     try:
         if diagnostics.version() < requiredVersion:
