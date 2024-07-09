@@ -14,7 +14,7 @@ Profiles are found in scripts/profiles and a default profile (WASD_Default.py).
 Custom profiles should be created in scripts/user_profiles which also contains a README.md for **How to define a profile**.
 
 ## Installation
- - download the [complete build with script and profiles](https://github.com/Ofisare/VRCompanion/releases/latest)
+ - download the [complete build with script and profiles](https://github.com/Ofisare/VRCompanion/releases/tag/Release_2.0)
  - unzip
  - start freepie
  - load scripts/vr_companion.py
