@@ -6,8 +6,8 @@ if keyboard.getKeyDown(Key.A):
 else:
 	vigem.SetButtonState(VigemController.XBoxController, VigemButton.A, False)
 	
-vigem.SetStick(VigemController.XBoxController, VigemSide.Left, openVR.leftStickAxes.x, openVR.leftStickAxes.y)
-vigem.SetStick(VigemController.XBoxController, VigemSide.Right, openVR.rightStickAxes.x, openVR.rightStickAxes.y)
-vigem.SetDPad(VigemController.XBoxController, openVR.rightStickAxes.x, openVR.rightStickAxes.y, 0.3)
-vigem.SetTrigger(VigemController.XBoxController, VigemSide.Left, openVR.leftTrigger)
-vigem.SetTrigger(VigemController.XBoxController, VigemSide.Right, openVR.rightTrigger)
+vigem.SetStick(VigemController.XBoxController, VigemSide.Left, vr.leftStickAxes.x, vr.leftStickAxes.y)
+vigem.SetStick(VigemController.XBoxController, VigemSide.Right, vr.rightStickAxes.x, vr.rightStickAxes.y)
+vigem.SetDPad(VigemController.XBoxController, vr.rightStickAxes.x, vr.rightStickAxes.y, 0.3)
+vigem.SetTrigger(VigemController.XBoxController, VigemSide.Left, vr.leftTrigger)
+vigem.SetTrigger(VigemController.XBoxController, VigemSide.Right, vr.rightTrigger)

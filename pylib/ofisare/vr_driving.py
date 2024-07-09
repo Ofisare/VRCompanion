@@ -55,7 +55,7 @@ class VRDriving:
         
         # get angle based on left controller
         if self.leftControllerActive.current:
-            vector, perpendicular = self.getVectors(environment.openVR.leftTouchPose)
+            vector, perpendicular = self.getVectors(environment.vr.leftTouchPose)
             if self._lastLeftControllerActive:
                 angle += angleBetween(self._initialLeftVector, vector, self._initialLeftPerpendicularVector)
             else:
@@ -70,7 +70,7 @@ class VRDriving:
         
         # get angle based on right controller
         if self.rightControllerActive.current:
-            vector, perpendicular = self.getVectors(environment.openVR.rightTouchPose)
+            vector, perpendicular = self.getVectors(environment.vr.rightTouchPose)
             if self._lastRightControllerActive:
                 angle += angleBetween(self._initialRightVector, vector, self._initialRightPerpendicularVector)
             else:

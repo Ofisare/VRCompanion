@@ -28,7 +28,7 @@ Custom profiles should be created in scripts/user_profiles which also contains a
 The debug output should give current information about the orientation of the headset/controllers if everything is working.
 For OpenXR it is important to start the script before starting the game so the used OpenXR API Layer is correctly registered (closing the application unregisters the api layer again).
 
-Per default, OpenVR is used. Under Settings > Open VR you can select the
+Per default, OpenVR is used. Under Settings > VR you can select the
  - Oculus runtime (for Oculus Rift (s) and possibly Meta Quest over AirLink, but possibly no haptics),
  - OpenXR (experimental), and
  - OpenVR (most compatible).

@@ -7,7 +7,7 @@ The OpenXR API is the only api that allows FreePIE to block all mappings of cont
 This way the profile can be freely defined without accidentally triggering other ingame actions (like shooting the rocket launcher at your feets when you actually wanted to grab the pistol).
 
 If you just want to enhance the existing interaction mapping of for instance UEVR or any other game/application just use:
-`openVR.configureInput(OpenXR_All)`
+`vr..configureInput(OpenXR_All)`
 
 
 ## Gestures
@@ -113,8 +113,8 @@ Each gesture
 <tr><td>gestureTracker.triggerRight</td>              <td>negative right trigger press</td></tr>
 <tr><td>gestureTracker.upperAreaLeft</td>             <td>head y - left controller y</td></tr>
 <tr><td>gestureTracker.upperAreaRight</td>            <td>head y - right controller y</td></tr>
-<tr><td>gestureTracker.useLeft</td>                   <td>openVR.leftTouchPose.left.y, basically checking whether the left palm is facing down</td></tr>
-<tr><td>gestureTracker.useRight</td>                  <td>openVR.rightTouchPose.left.y, basically checking whether the right palm is facing down</td></tr>
+<tr><td>gestureTracker.useLeft</td>                   <td>vr..leftTouchPose.left.y, basically checking whether the left palm is facing down</td></tr>
+<tr><td>gestureTracker.useRight</td>                  <td>vr..rightTouchPose.left.y, basically checking whether the right palm is facing down</td></tr>
 </tbody>
 </table>
 

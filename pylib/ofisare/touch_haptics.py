@@ -39,11 +39,11 @@ class TouchHapticsPlayer:
     def update(self, deltaTime):
         if len(self._left) > 0:            
             left = self._left.pop(0)
-            environment.openVR.triggerHapticPulse(0, deltaTime, left.frequency, left.amplitude)
+            environment.vr.triggerHapticPulse(0, deltaTime, left.frequency, left.amplitude)
             
         if len(self._right) > 0:
             right = self._right.pop(0)
-            environment.openVR.triggerHapticPulse(1, deltaTime, right.frequency, right.amplitude)
+            environment.vr.triggerHapticPulse(1, deltaTime, right.frequency, right.amplitude)
 
     # some patterns
     def pulse(self, length, intensity):               

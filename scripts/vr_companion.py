@@ -19,7 +19,7 @@
 # If a new version of FreePIE is required the script will communicate this with an error message.
 # In that case, download the latest complete build with scripts and profiles (https://github.com/Ofisare/VRCompanion/releases/tag/Release_2.0).
 #
-# Under "Settings > Plugins > Open VR" you can switch the vr engine to be used:
+# Under "Settings > Plugins > VR" you can switch the vr runtime to be used:
 # - OpenVR: most compatible
 # - OpenXR: only in 64bit version, has to be started before the game
 # - Oculus: only for Oculus Rift (s) and Meta Quest connected via Cable and possibly Air Link (controller haptics might not be working)
@@ -76,22 +76,22 @@ def reset():
     global vrDriving
 
     # recenter the device
-    openVR.center()
+    vr.center()
     
     # update head height
-    headController.standingHeight = openVR.headPose.position.y
+    headController.standingHeight = vr.headPose.position.y
     
     # set current controller positions
-    leftController.x = openVR.leftTouchPose.position.x    
-    leftController.y = openVR.leftTouchPose.position.y
-    leftController.z = openVR.leftTouchPose.position.z
+    leftController.x = vr.leftTouchPose.position.x    
+    leftController.y = vr.leftTouchPose.position.y
+    leftController.z = vr.leftTouchPose.position.z
     
-    rightController.x = openVR.rightTouchPose.position.x
-    rightController.y = openVR.rightTouchPose.position.y
-    rightController.z = openVR.rightTouchPose.position.z
+    rightController.x = vr.rightTouchPose.position.x
+    rightController.y = vr.rightTouchPose.position.y
+    rightController.z = vr.rightTouchPose.position.z
 
     # recenter roll settings
-    rollCenter = 0 #gestureTracker.roll(openVR.headPose)
+    rollCenter = 0 #gestureTracker.roll(vr.headPose)
     
     # unpress all buttons
     gestureSets.getCurrentGestureSet().reset()
@@ -136,13 +136,13 @@ def update():
     touchHapticsPlayer.update(deltaTime)
                     
     # set current controller positions
-    leftController.x = openVR.leftTouchPose.position.x    
-    leftController.y = openVR.leftTouchPose.position.y
-    leftController.z = openVR.leftTouchPose.position.z
+    leftController.x = vr.leftTouchPose.position.x    
+    leftController.y = vr.leftTouchPose.position.y
+    leftController.z = vr.leftTouchPose.position.z
     
-    rightController.x = openVR.rightTouchPose.position.x    
-    rightController.y = openVR.rightTouchPose.position.y
-    rightController.z = openVR.rightTouchPose.position.z
+    rightController.x = vr.rightTouchPose.position.x    
+    rightController.y = vr.rightTouchPose.position.y
+    rightController.z = vr.rightTouchPose.position.z
             
     # reset clock for next update
     LastUpdate = time.clock()
@@ -309,7 +309,7 @@ def selectProfile():
     VrToMouse_Right = 3
     VrToMouse_StickOnly = 4
     
-    # possible vr driving mods
+    # possible vr driving modes
     VrDriving_None = 0
     VrDriving_Action = 1
     VrDriving_Mouse = 10
@@ -443,7 +443,7 @@ if starting:
     LastUpdate = time.clock()                # last time an update happened
     
     environment.updateFrequency = 1.0 / 60.0            # interval between updates
-    environment.openVR = openVR
+    environment.vr = vr
     environment.freePieIO = freePieIO
     environment.mouse = mouse
     environment.keyboard = KeyboardWrapper(keyboard)
@@ -548,21 +548,21 @@ if starting:
     touchHapticsPlayer.play(TouchHaptics(False, touchHapticsPlayer.pulse(0.25, 0.25)))
         
     reset()    # reorient the head set settings
-    openVR.update += update    # register to update events of the head set 
+    vr.update += update    # register to update events of the head set 
     
 if DebugOutput:
     # debugging
-    diagnostics.watch(openVR.headPose.position.x)
-    diagnostics.watch(openVR.headPose.position.y)
-    diagnostics.watch(openVR.headPose.position.z)
+    diagnostics.watch(vr.headPose.position.x)
+    diagnostics.watch(vr.headPose.position.y)
+    diagnostics.watch(vr.headPose.position.z)
         
-    diagnostics.watch(openVR.leftTouchPose.position.x)
-    diagnostics.watch(openVR.leftTouchPose.position.y)
-    diagnostics.watch(openVR.leftTouchPose.position.z)
+    diagnostics.watch(vr.leftTouchPose.position.x)
+    diagnostics.watch(vr.leftTouchPose.position.y)
+    diagnostics.watch(vr.leftTouchPose.position.z)
     
-    diagnostics.watch(openVR.rightTouchPose.position.x)
-    diagnostics.watch(openVR.rightTouchPose.position.y)
-    diagnostics.watch(openVR.rightTouchPose.position.z)
+    diagnostics.watch(vr.rightTouchPose.position.x)
+    diagnostics.watch(vr.rightTouchPose.position.y)
+    diagnostics.watch(vr.rightTouchPose.position.z)
     
     diagnostics.watch(gestureSets.mode.current)
     diagnostics.watch(weaponInventory.current)
