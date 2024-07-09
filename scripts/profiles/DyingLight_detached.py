@@ -47,7 +47,7 @@ vrToMouse.stickMultiplierY = 0.5
 vrToMouse.enableRoll.current = True
 
 gestureTracker.grabRight.enabled = True
-gestureTracker.grabRight.action = ModeSwitchWithReset(vrToMouse.mode, VrToMouse_Right, VrToMouse_Headset)
+gestureTracker.grabRight.action = TimeBased([ModeBasedAction(vrToMouse.mode, {VrToMouse_Right: ModeSwitch(vrToMouse.mode, VrToMouse_Headset)}, ModeSwitch(vrToMouse.mode, VrToMouse_Right)), ModeSwitchWithReset(vrToMouse.mode, VrToMouse_Right, VrToMouse_Headset)])
 
 # Actions
 # Use Equipment: Left Melee Gesture while holding Trigger + X Long Press (Middle Mouse Button)
@@ -71,11 +71,9 @@ gestureTracker.buttonY.action = TimeBased([KeyPress(Key.V), KeyPress(Key.Escape)
 gestureTracker.lightLeft.enabled = True
 gestureTracker.lightLeft.triggerAction = KeyPress(Key.Q)
 
-# Attack: Right Trigger and swing for Melee (Left Mouse Button)
+# Attack: Right Trigger (Left Mouse Button)
 gestureTracker.triggerRight.enabled = True
 gestureTracker.triggerRight.action = MousePress(0)
-gestureTracker.meleeRight.enabled = True
-gestureTracker.meleeRight.action = MousePress(0)
 
 # Aim: Left Trigger (Right Mouse Button)
 gestureTracker.triggerLeft.enabled = True
