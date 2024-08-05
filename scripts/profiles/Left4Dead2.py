@@ -3,22 +3,28 @@
 # unset left and right grip
 # remap duck to b
 
+gestureTracker.duck.enabled = True
+gestureTracker.duck.action = KeyPress(Key.B)
+
 # Combat
 # Trigger Right -> just for feedback
 gestureTracker.triggerRight.enabled = True
-gestureTracker.triggerRight.action = Action()
+gestureTracker.triggerRight.action = KeyPress(Key.B) #Action()
+
 
 # Melee Right -> just for feedback
 gestureTracker.meleeRight.enabled = True
 gestureTracker.meleeRight.action = Action()
 gestureTracker.meleeRight.lowerThreshold = -2
 gestureTracker.meleeRight.upperThreshold = -0.5
+gestureTracker.meleeRight.coolDown = 0;
 
 # Push away enemies: Left Melee while hold grip (Right Mouse Button)
 gestureTracker.meleeLeft.enabled = True
 gestureTracker.meleeLeft.gripAction = MousePress(1)
-gestureTracker.meleeLeft.lowerThreshold = -2
-gestureTracker.meleeLeft.upperThreshold = -0.5
+gestureTracker.meleeLeft.lowerThreshold = -1
+gestureTracker.meleeLeft.upperThreshold = -0.25
+gestureTracker.meleeLeft.coolDown = 0;
 
 # Reload: bring hands together and left grip (R)
 gestureTracker.aimPistol.enabled = True

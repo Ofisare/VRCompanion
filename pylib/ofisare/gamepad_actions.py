@@ -15,7 +15,7 @@ class GamepadAction(Action):
             else:
                 self._keys.append(keys)
         self._duration = 0.035
-        self._time = time.time()
+        self._time = 0
         self._needUpdate = False
     
     def setKeyDown(self):

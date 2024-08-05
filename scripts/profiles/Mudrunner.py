@@ -17,13 +17,14 @@ gestureTracker.triggerLeft.action = KeyPress(Key.S)
 gestureTracker.triggerRight.enabled = True
 gestureTracker.triggerRight.action = KeyPress(Key.W)
 
-vrDriving.axis.mode.current = VrDriving_Gamepad
-vrDriving.axis.gamepadSide = VigemSide.Left
-vrDriving.axis.gamepadAxis = VigemAxis.XAxis
-vrDriving.axis.sensitivity = 1.7
+mainController = vrControllers["main"]
+mainController.axis.mode.current = VrController_Gamepad
+mainController.axis.gamepadSide = VigemSide.Left
+mainController.axis.gamepadAxis = VigemAxis.XAxis
+mainController.axis.sensitivity = 1.7
 
 gestureTracker.grabRight.enabled = True
-gestureTracker.grabRight.action = ModeSwitchWithReset(vrDriving.rightControllerActive, 1, 0)
+gestureTracker.grabRight.action = ModeSwitchWithReset(mainController.rightControllerActive, 1, 0)
 
 gestureTracker.grabLeft.enabled = True
-gestureTracker.grabLeft.action = ModeSwitchWithReset(vrDriving.leftControllerActive, 1, 0)
+gestureTracker.grabLeft.action = ModeSwitchWithReset(mainController.leftControllerActive, 1, 0)

@@ -47,6 +47,7 @@ except ImportError:
 def __init_plugins__():
     keyboard.getPressed(Key.Space)
     vigem.CreateController(VigemController.XBoxController)
+    vigem.SetButtonState(VigemButton.A, True)
 
 
 #**************************************
@@ -73,7 +74,7 @@ def reset():
     global vrToMouse
     global vrToGamepad
     global vrRoomscale
-    global vrDriving
+    global vrControllers
 
     # recenter the device
     vr.center()
@@ -99,7 +100,8 @@ def reset():
     vrToMouse.reset()
     vrToGamepad.reset()
     vrRoomscale.reset()
-    vrDriving.reset()
+    for controller in vrControllers.values():
+        controller.reset()
 
 # getting new information from device
 def update():
@@ -112,7 +114,7 @@ def update():
     global vrToMouse
     global vrToGamepad
     global vrRoomscale
-    global vrDriving
+    global vrControllers
     
     # check interval
     currentTime = time.clock()
@@ -130,7 +132,9 @@ def update():
     vrToMouse.update(currentTime, deltaTime)
     vrToGamepad.update(currentTime, deltaTime)
     vrRoomscale.update(currentTime, deltaTime)
-    vrDriving.update(currentTime, deltaTime)
+    
+    for controller in vrControllers.values():
+        controller.update(currentTime, deltaTime)
     
     # perform touch haptics
     touchHapticsPlayer.update(deltaTime)
@@ -255,7 +259,7 @@ def selectProfile():
     global vrToMouse
     global vrToGamepad
     global vrRoomscale
-    global vrDriving
+    global vrControllers
     global profile
     
     # load settings
@@ -310,10 +314,10 @@ def selectProfile():
     VrToMouse_StickOnly = 4
     
     # possible vr driving modes
-    VrDriving_None = 0
-    VrDriving_Action = 1
-    VrDriving_Mouse = 10
-    VrDriving_Gamepad = 20
+    VrController_None = 0
+    VrController_Action = 1
+    VrController_Mouse = 10
+    VrController_Gamepad = 20
     
     # possible openXR interaction settings
     OpenXR_All = 1
@@ -533,12 +537,12 @@ if starting:
     vrToMouse = VRToMouse()
     vrToGamepad = VRToGamepad()
     vrRoomscale = VRRoomscale()
-    vrDriving = VRDriving()
+    vrControllers = { "main": VirtualController() }
     
     environment.vrToMouse = vrToMouse
     environment.vrToGamepad = vrToGamepad
     environment.vrRoomscale = vrRoomscale
-    environment.vrDriving = vrDriving
+    environment.vrControllers = vrControllers
     environment.hapticPlayer = hapticPlayer
     environment.touchHapticsPlayer = touchHapticsPlayer
             
@@ -552,6 +556,8 @@ if starting:
     
 if DebugOutput:
     # debugging
+    diagnostics.watch(vr.isMounted)
+    
     diagnostics.watch(vr.headPose.position.x)
     diagnostics.watch(vr.headPose.position.y)
     diagnostics.watch(vr.headPose.position.z)

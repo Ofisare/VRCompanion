@@ -16,7 +16,7 @@ import math
 # Additionally, you can switch between using a controllers
 # position or orientation (useControllerOrientation).
 #****************************************************************
-class VRDriving:
+class VirtualController:
     def __init__(self):
         self.axis = VRRoomscaleAxis()
         self.axis.mode.current = True

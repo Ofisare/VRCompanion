@@ -15,8 +15,8 @@ from .mouse_actions import *
 from .numerics import *
 from .time_based_actions import *
 from .touch_haptics import *
+from .virtual_controller import *
 from .voice_commands import *
-from .vr_driving import *
 from .vr_roomscale import *
 from .vr_to_gamepad import *
 from .vr_to_mouse import *
