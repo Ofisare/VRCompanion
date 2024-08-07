@@ -60,10 +60,10 @@ class VRToGamepad:
             
         # map left stick to dpad
         if self.dpadMode == 1:
-            vigem.SetDPad(self.controller, environment.vr.leftStickAxes.x, environment.vr.leftStickAxes.y, self.dpadThreshold)
+            environment.vigem.SetDPad(self.controller, environment.vr.leftStickAxes.x, environment.vr.leftStickAxes.y, self.dpadThreshold)
         # map right stick to dpad
         elif self.dpadMode == 2:
-            vigem.SetDPad(self.controller, environment.vr.rightStickAxes.x, environment.vr.rightStickAxes.y, self.dpadThreshold)
+            environment.vigem.SetDPad(self.controller, environment.vr.rightStickAxes.x, environment.vr.rightStickAxes.y, self.dpadThreshold)
 
     def reset(self):
         pass
