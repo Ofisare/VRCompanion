@@ -51,10 +51,10 @@ class GestureTracker:
         self.meleeLeftAlt = Gesture(-5, -2.0)                           # negative speed from left controller, pointing upwards
         self.meleeLeftAltPull = Gesture(-5, -2.0)                       # negative speed from left controller, pointing upwards and away from head
         self.meleeLeftAltPush = Gesture(-5, -2.0)                       # negative speed from left controller, pointing upwards and towards head
-        self.meleeRight = InventoryGesture(-5.0, -2.0, inventory)       # negative speed from right controller
-        self.meleeRightAlt = InventoryGesture(-5, -2.0, inventory)      # negative speed from right controller, pointing upwards
-        self.meleeRightAltPull = InventoryGesture(-5, -2.0, inventory)  # negative speed from right controller, pointing upwards and away from head
-        self.meleeRightAltPush = InventoryGesture(-5, -2.0, inventory)  # negative speed from right controller, pointing upwards and towards head
+        self.meleeRight = InventoryGesture(-5.0, -2.0, 0, inventory)       # negative speed from right controller
+        self.meleeRightAlt = InventoryGesture(-5, -2.0, 0, inventory)      # negative speed from right controller, pointing upwards
+        self.meleeRightAltPull = InventoryGesture(-5, -2.0, 0, inventory)  # negative speed from right controller, pointing upwards and away from head
+        self.meleeRightAltPush = InventoryGesture(-5, -2.0, 0, inventory)  # negative speed from right controller, pointing upwards and towards head
         self.shoulderInventoryLeft = LocationBasedGesture(0.05, 0.1, Vector(-0.3, 0, 0.1)) # distance between left controller and left shoulder
         self.shoulderInventoryRight = LocationBasedGesture(0.05, 0.1, Vector(0.3, 0, 0.1)) # distance between left controller and right shoulder
         self.shoulderWeaponLeft = LocationBasedGesture(0.05, 0.1, Vector(-0.3, 0, 0.1))    # distance between right controller and left shoulder
