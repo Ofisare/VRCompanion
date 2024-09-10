@@ -2,16 +2,16 @@
 
 vrToGamepad.setController(VigemController.XBoxController)
 
-vrToGamepad.leftTriggerMode = 1
-vrToGamepad.rightTriggerMode = 2
+vrToGamepad.leftTriggerMode.current = 1
+vrToGamepad.rightTriggerMode.current = 2
 
 gestureTracker.gripLeft.enabled = True
 gestureTracker.gripLeft.action = GamepadPress(VigemButton.ShoulderLeft)
 gestureTracker.gripRight.enabled = True
 gestureTracker.gripRight.action = GamepadPress(VigemButton.ShoulderRight)
 
-vrToGamepad.leftStickMode = 1
-vrToGamepad.rightStickMode = 2
+vrToGamepad.leftStickMode.current = 1
+vrToGamepad.rightStickMode.current = 2
 
 gestureTracker.buttonLeftStick.enabled = True
 gestureTracker.buttonLeftStick.action = GamepadPress(VigemButton.ThumbLeft)

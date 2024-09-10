@@ -31,38 +31,38 @@ class VRToGamepad:
 
     def update(self, currentTime, deltaTime):
         # map left trigger to left trigger
-        if self.leftTriggerMode == 1:
+        if self.leftTriggerMode.current == 1:
             environment.vigem.SetTrigger(self.controller, environment.VigemSide.Left, environment.vr.leftTrigger)
         # map right trigger to left trigger
-        elif self.leftTriggerMode == 2:
+        elif self.leftTriggerMode.current == 2:
             environment.vigem.SetTrigger(self.controller, environment.VigemSide.Left, environment.vr.rightTrigger)
         
         # map right trigger to right trigger
-        if self.rightTriggerMode == 1:
+        if self.rightTriggerMode.current == 1:
             environment.vigem.SetTrigger(self.controller, environment.VigemSide.Right, environment.vr.leftTrigger)
         # map left trigger to right trigger
-        elif self.rightTriggerMode == 2:
+        elif self.rightTriggerMode.current == 2:
             environment.vigem.SetTrigger(self.controller, environment.VigemSide.Right, environment.vr.rightTrigger)
         
         # map left stick to left stick
-        if self.leftStickMode == 1:
+        if self.leftStickMode.current == 1:
             environment.vigem.SetStick(self.controller, environment.VigemSide.Left, environment.vr.leftStickAxes.x, environment.vr.leftStickAxes.y)
         # map right stick to left stick
-        elif self.leftStickMode == 2:
+        elif self.leftStickMode.current == 2:
             environment.vigem.SetStick(self.controller, environment.VigemSide.Left, environment.vr.rightStickAxes.x, environment.vr.rightStickAxes.y)
         
         # map right stick to right stick
-        if self.rightStickMode == 1:
+        if self.rightStickMode.current == 1:
             environment.vigem.SetStick(self.controller, environment.VigemSide.Right, environment.vr.leftStickAxes.x, environment.vr.leftStickAxes.y)
         # map left stick to right stick
-        elif self.rightStickMode == 2:
+        elif self.rightStickMode.current == 2:
             environment.vigem.SetStick(self.controller, environment.VigemSide.Right, environment.vr.rightStickAxes.x, environment.vr.rightStickAxes.y)
             
         # map left stick to dpad
-        if self.dpadMode == 1:
+        if self.dpadMode.current == 1:
             environment.vigem.SetDPad(self.controller, environment.vr.leftStickAxes.x, environment.vr.leftStickAxes.y, self.dpadThreshold)
         # map right stick to dpad
-        elif self.dpadMode == 2:
+        elif self.dpadMode.current == 2:
             environment.vigem.SetDPad(self.controller, environment.vr.rightStickAxes.x, environment.vr.rightStickAxes.y, self.dpadThreshold)
 
     def reset(self):

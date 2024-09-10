@@ -323,7 +323,8 @@ def selectProfile():
     OpenXR_All = 1
     
     # possible validation modes
-    GestureValidation_None = 0
+    GestureValidation_None = -1
+    GestureValidation_NoTriggerGrip = 0
     GestureValidation_Delay = 1
     GestureValidation_Trigger = 2
     GestureValidation_Grip = 3

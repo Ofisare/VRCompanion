@@ -24,7 +24,7 @@ class Gesture:
     # * hapticsHold: the haptics when within the gesture -> a continuous feedback -> minigun/chainsaw
     # * hapticsLeave: the haptics when leaving the gesture
     
-    def __init__(self, lowerThreshold, upperThreshold):
+    def __init__(self, lowerThreshold, upperThreshold, mode = 0):
         self.lowerThreshold = lowerThreshold
         self.upperThreshold = upperThreshold
         
@@ -33,7 +33,7 @@ class Gesture:
         self._lastTriggerTime = 0
         self._lastGripTime = 0
         
-        self.validationMode = 0
+        self.validationMode = mode
         self.validationThreshold = 0.6
         self.validationTime = 0.5
         self._validationStartTime = 0
@@ -86,7 +86,7 @@ class Gesture:
     
         # gesture entered, check whether to leave or stay in gesture
         if self.inGesture:
-            if value > self.upperThreshold:
+            if (self.validationMode == 0 and (self.inTriggerGesture or self.inGripGesture)) or value > self.upperThreshold:
                 self.playHaptics(currentTime, haptics.leave, haptics.touchLeave)
                 if self.action != None:
                     self.action.leave()
@@ -101,8 +101,12 @@ class Gesture:
             if currentTime - self._lastActionTime > self.coolDown and value < self.lowerThreshold:
                 valid = False
                 # no validation required
-                if self.validationMode == 0:
+                if self.validationMode == -1:
                     valid = True
+                # check if no trigger and grip
+                elif self.validationMode == 0:
+                    if self.inTriggerGesture == False and self.inGripGesture == False:
+                        valid = True
                 # delayed/time based validation
                 elif self.validationMode == 1:
                     if self._inValidation:
@@ -194,12 +198,13 @@ class Gesture:
     
     def _updateCore(self, currentTime, value, gestureValidation, haptics):
         # check gestures
-        if self.action != None:
-            self._updateBaseGesture(currentTime, value, gestureValidation, haptics)
         if self.triggerAction != None:
             self._updateTriggerGesture(currentTime, value, gestureValidation, haptics)
         if self.gripAction != None:
             self._updateGripGesture(currentTime, value, gestureValidation, haptics)
+        # check base action last as it depends on trigger and grip state
+        if self.action != None:
+            self._updateBaseGesture(currentTime, value, gestureValidation, haptics)
         
         # check for validation
         if self.inGesture or self.inTriggerGesture or self.inGripGesture:
@@ -219,8 +224,8 @@ class Gesture:
 # Special class using item feedback instead of gesture feedback
 #***************************************************************
 class InventoryGesture(Gesture):
-    def __init__(self, lowerThreshold, upperThreshold, inventory):
-        Gesture.__init__(self, lowerThreshold, upperThreshold)
+    def __init__(self, lowerThreshold, upperThreshold, mode, inventory):
+        Gesture.__init__(self, lowerThreshold, upperThreshold, mode)
         self._inventory = inventory
 
     def update(self, currentTime, value, gestureValidation):
