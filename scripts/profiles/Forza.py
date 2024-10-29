@@ -30,11 +30,11 @@ def afterUpdate(sender):
     global DEADZONE_WHILE_MOUSELOOK_DISABLED
 
     yaw = environment.vr.headPose.yaw * 0.01745
-    #pitch = environment.vr.headPose.pitch * 0.01745
+    pitch = environment.vr.headPose.pitch * 0.01745
 
     #convert yaw and pitch to -1 to 1
     normalizedYaw = filters.ensureMapRange(yaw, -HEAD_TURN_LEFT_DEGREES, HEAD_TURN_RIGHT_DEGREES, -1, 1)
-    #normalizedPitch = filters.ensureMapRange(pitch, -HEAD_TURN_UP_DEGREES, HEAD_TURN_UP_DEGREES, -1, 1)
+    normalizedPitch = filters.ensureMapRange(pitch, -HEAD_TURN_UP_DEGREES, HEAD_TURN_UP_DEGREES, -1, 1)
     
     # deadzone for mouse look changes based on bMouseLookEnabled
     dz = DEADZONE_WHILE_MOUSELOOK_ENABLED if bMouseLookEnabled else DEADZONE_WHILE_MOUSELOOK_DISABLED
