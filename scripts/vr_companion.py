@@ -563,6 +563,9 @@ if DebugOutput:
     diagnostics.watch(vr.headPose.position.y)
     diagnostics.watch(vr.headPose.position.z)
         
+    diagnostics.watch(vr.headPose.yaw)
+    diagnostics.watch(vr.headPose.pitch)
+    diagnostics.watch(vr.headPose.roll)
     diagnostics.watch(vr.leftTouchPose.position.x)
     diagnostics.watch(vr.leftTouchPose.position.y)
     diagnostics.watch(vr.leftTouchPose.position.z)

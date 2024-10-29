@@ -31,20 +31,33 @@ class VRToMouse:
         self.useControllerOrientation = True
         self.useRightController = True
         
+        # define a delegate function called beforeUpdate(sender)
+        self.beforeUpdate = None
+        # define a delegate function called afterUpdate(sender)
+        self.afterUpdate = None
+
         self._yaw = 0.0
         self._pitch = 0.0
+        self.deltaX = 0.0
+        self.deltaY = 0.0
         
         self._lastMode = 0
         self._yawOffset = 0.0
         self._pitchOffset = 0.0
 
     def update(self, currentTime, deltaTime):
+
+        if self.beforeUpdate is not None:
+            self.beforeUpdate(self)
+
         if self.mode.current == 0:
             if self._lastMode != 0:
                 # reset settings
                 self._lastMode = self.mode.current
                 self._yawOffset = 0
                 self._pitchOffset = 0
+                self.deltaX = 0.0
+                self.deltaY = 0.0
                 # no mouse mapping
                 environment.freePieIO[0].yaw = 0
                 environment.freePieIO[0].pitch = 0
@@ -56,9 +69,10 @@ class VRToMouse:
         
         # get head orientation
         yawHead, pitchHead, rollHead = getYawPitchRoll(environment.vr.headPose)
+        
         if self.mode.current == 1:
             yawTarget = yawHead
-            pitchTarget = pitchHead            
+            pitchTarget = pitchHead
         elif self.mode.current == 2:
             # left controller
             if self.useControllerOrientation:
@@ -129,14 +143,17 @@ class VRToMouse:
         
         if self.stickMode.current == 1:
             if self.useRightController:
-                deltaX = deltaX + environment.vr.rightStickAxes.x * self.mouseSensitivityX * self.stickMultiplierX * deltaTime
-                deltaY = deltaY - environment.vr.rightStickAxes.y * self.mouseSensitivityY * self.stickMultiplierY * deltaTime
+                self.deltaX = deltaX + environment.vr.rightStickAxes.x * self.mouseSensitivityX * self.stickMultiplierX * deltaTime
+                self.deltaY = deltaY - environment.vr.rightStickAxes.y * self.mouseSensitivityY * self.stickMultiplierY * deltaTime
             else:
-                deltaX = deltaX + environment.vr.leftStickAxes.x * self.mouseSensitivityX * self.stickMultiplierX * deltaTime
-                deltaY = deltaY - environment.vr.leftStickAxes.y * self.mouseSensitivityY * self.stickMultiplierY * deltaTime
+                self.deltaX = deltaX + environment.vr.leftStickAxes.x * self.mouseSensitivityX * self.stickMultiplierX * deltaTime
+                self.deltaY = deltaY - environment.vr.leftStickAxes.y * self.mouseSensitivityY * self.stickMultiplierY * deltaTime
         
-        environment.mouse.deltaX = deltaX
-        environment.mouse.deltaY = deltaY
+        if self.afterUpdate is not None:
+            self.afterUpdate(self)
+
+        environment.mouse.deltaX = self.deltaX
+        environment.mouse.deltaY = self.deltaY
         
         # communicate to reshade
         if self.enableYawPitch.current:
