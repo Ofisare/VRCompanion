@@ -29,8 +29,8 @@ def afterUpdate(sender):
     global DEADZONE_WHILE_MOUSELOOK_ENABLED 
     global DEADZONE_WHILE_MOUSELOOK_DISABLED
 
-    yaw = environment.vr.headPose.yaw * 0.01745
-    pitch = environment.vr.headPose.pitch * 0.01745
+    yaw = environment.vr.headPose.yaw
+    pitch = environment.vr.headPose.pitch
 
     #convert yaw and pitch to -1 to 1
     normalizedYaw = filters.ensureMapRange(yaw, -HEAD_TURN_LEFT_DEGREES, HEAD_TURN_RIGHT_DEGREES, -1, 1)
