@@ -8,39 +8,59 @@
 # NOTE: Forza games dont actually support pitch for mouse look, so this script only uses yaw.
 #****************************************************************
 
-# ADJUSTABLE SCRIPT PARAMETERS
-HEAD_TURN_LEFT_DEGREES  = -40  # How many degrees of head rotation to the left should be considered as full left turn
-HEAD_TURN_RIGHT_DEGREES = 40  # How many degrees of head rotation to the right should be considered as full right turn
-HEAD_TURN_UP_DEGREES    = -40  # How many degrees of head rotation up should be considered as full up turn
-HEAD_TURN_DOWN_DEGREES  = 40  # How many degrees of head rotation down should be considered as full down turn
 
-DEADZONE_WHILE_MOUSELOOK_ENABLED  = 0.1  # Deadzone for headtracking while mouselook is enabled
-DEADZONE_WHILE_MOUSELOOK_DISABLED = 0.8  # Deadzone for headtracking while mouselook is disabled
 
 bMouseLookEnabled = False
 
+class hDirection:
+    global bMouseLookEnabled
+
+    def __init__(self, degrees , joyValue, deadZones = [0, 0]):
+        # type: (int, float, List[float]) -> None
+        self.degrees = degrees # Maximum degrees of head rotation
+        self.value = joyValue   # Maximum value for joystick axis     
+        self._deadZones = [abs(deadZones[0]), abs(deadZones[1])] # (0-1)
+        self._deadZoneIndex = 0
+    
+    @property
+    def deadZone(self):
+        # type: () -> float
+        return self._deadZones[self.deadZoneIndex]
+    
+    @property
+    def deadZoneIndex(self):
+        # type: () -> int        
+        return 1 if bMouseLookEnabled else 0
+    
+    def isActive(self, headValue):
+    # type: (float) -> bool
+        return abs(headValue) > self.deadZone
+
+# ADJUSTABLE SCRIPT PARAMETERS
+
+FULLY_DISABLED = [1, 1]  # Effectivly disables deadzone when mouselook is enabled
+LEFT_DIRECTION  = hDirection(-40,-1, [0.8, 0.1])  
+RIGHT_DIRECTION = hDirection( 40, 1, [0.8, 0.1]) 
+UP_DIRECTION    = hDirection(-40,-1, FULLY_DISABLED) 
+DOWN_DIRECTION  = hDirection( 40, 1, FULLY_DISABLED) 
 
 def afterUpdate(sender):
+    # type: (VRToMouse) -> None
     global bMouseLookEnabled
-    global HEAD_TURN_LEFT_DEGREES
-    global HEAD_TURN_RIGHT_DEGREES
-    global HEAD_TURN_UP_DEGREES   
-    global HEAD_TURN_DOWN_DEGREES 
-    global DEADZONE_WHILE_MOUSELOOK_ENABLED 
-    global DEADZONE_WHILE_MOUSELOOK_DISABLED
-
+    global LEFT_DIRECTION 
+    global RIGHT_DIRECTION
+    global UP_DIRECTION   
+    global DOWN_DIRECTION 
+    
     yaw = environment.vr.headPose.yaw
     pitch = environment.vr.headPose.pitch
 
     #convert yaw and pitch to -1 to 1
-    headX = filters.ensureMapRange(yaw, HEAD_TURN_LEFT_DEGREES, HEAD_TURN_RIGHT_DEGREES, -1, 1)
-    headY = filters.ensureMapRange(pitch, HEAD_TURN_UP_DEGREES, HEAD_TURN_UP_DEGREES, -1, 1)
-    
-    # deadzone for mouse look changes based on bMouseLookEnabled
-    dz = DEADZONE_WHILE_MOUSELOOK_ENABLED if bMouseLookEnabled else DEADZONE_WHILE_MOUSELOOK_DISABLED
-
-    # enable mouse look if yaw is outside deadzone
-    bMouseLookEnabled = True if abs(headX) > dz else False
+    headX = filters.ensureMapRange(yaw, LEFT_DIRECTION.degrees, RIGHT_DIRECTION.degrees, LEFT_DIRECTION.value, RIGHT_DIRECTION.value)
+    headY = filters.ensureMapRange(pitch, UP_DIRECTION.degrees, DOWN_DIRECTION.degrees, UP_DIRECTION.value, DOWN_DIRECTION.value)
+        
+    bMouseLookEnabled = LEFT_DIRECTION.isActive(headX) or RIGHT_DIRECTION.isActive(headX) \
+                        or UP_DIRECTION.isActive(headY) or  DOWN_DIRECTION.isActive(headY) 
 
     # press right mouse button to enable mouse look
     environment.mouse.rightButton = bMouseLookEnabled
@@ -51,8 +71,9 @@ def afterUpdate(sender):
         sender.deltaY = 0        
     
 
-    diagnostics.watch("{0}, {1}".format(headX, headY) , "headX,Y")
-    diagnostics.watch(dz, "dz")
+    diagnostics.watch("{0}, {1}".format(headX, headY) , "head X,Y")
+    diagnostics.watch(LEFT_DIRECTION.deadZone, "dzl")
+    diagnostics.watch(RIGHT_DIRECTION.deadZone, "dzr")
     diagnostics.watch(bMouseLookEnabled, "bMouseLookEnabled")
 
 
