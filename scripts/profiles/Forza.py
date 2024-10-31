@@ -33,14 +33,14 @@ def afterUpdate(sender):
     pitch = environment.vr.headPose.pitch
 
     #convert yaw and pitch to -1 to 1
-    normalizedYaw = filters.ensureMapRange(yaw, -HEAD_TURN_LEFT_DEGREES, HEAD_TURN_RIGHT_DEGREES, -1, 1)
-    normalizedPitch = filters.ensureMapRange(pitch, -HEAD_TURN_UP_DEGREES, HEAD_TURN_UP_DEGREES, -1, 1)
+    headX = filters.ensureMapRange(yaw, -HEAD_TURN_LEFT_DEGREES, HEAD_TURN_RIGHT_DEGREES, -1, 1)
+    headY = filters.ensureMapRange(pitch, -HEAD_TURN_UP_DEGREES, HEAD_TURN_UP_DEGREES, -1, 1)
     
     # deadzone for mouse look changes based on bMouseLookEnabled
     dz = DEADZONE_WHILE_MOUSELOOK_ENABLED if bMouseLookEnabled else DEADZONE_WHILE_MOUSELOOK_DISABLED
 
     # enable mouse look if yaw is outside deadzone
-    bMouseLookEnabled = True if abs(normalizedYaw) > dz else False
+    bMouseLookEnabled = True if abs(headX) > dz else False
 
     # press right mouse button to enable mouse look
     environment.mouse.rightButton = bMouseLookEnabled
@@ -51,8 +51,7 @@ def afterUpdate(sender):
         sender.deltaY = 0        
     
 
-    diagnostics.watch(normalizedYaw, "yawN")
-    diagnostics.watch(normalizedPitch, "pitchN")
+    diagnostics.watch("{0}, {1}".format(headX, headY) , "headX,Y")
     diagnostics.watch(dz, "dz")
     diagnostics.watch(bMouseLookEnabled, "bMouseLookEnabled")
 
