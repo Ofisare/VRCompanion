@@ -9,9 +9,9 @@
 #****************************************************************
 
 # ADJUSTABLE SCRIPT PARAMETERS
-HEAD_TURN_LEFT_DEGREES  = 40  # How many degrees of head rotation to the left should be considered as full left turn
+HEAD_TURN_LEFT_DEGREES  = -40  # How many degrees of head rotation to the left should be considered as full left turn
 HEAD_TURN_RIGHT_DEGREES = 40  # How many degrees of head rotation to the right should be considered as full right turn
-HEAD_TURN_UP_DEGREES    = 40  # How many degrees of head rotation up should be considered as full up turn
+HEAD_TURN_UP_DEGREES    = -40  # How many degrees of head rotation up should be considered as full up turn
 HEAD_TURN_DOWN_DEGREES  = 40  # How many degrees of head rotation down should be considered as full down turn
 
 DEADZONE_WHILE_MOUSELOOK_ENABLED  = 0.1  # Deadzone for headtracking while mouselook is enabled
@@ -33,8 +33,8 @@ def afterUpdate(sender):
     pitch = environment.vr.headPose.pitch
 
     #convert yaw and pitch to -1 to 1
-    headX = filters.ensureMapRange(yaw, -HEAD_TURN_LEFT_DEGREES, HEAD_TURN_RIGHT_DEGREES, -1, 1)
-    headY = filters.ensureMapRange(pitch, -HEAD_TURN_UP_DEGREES, HEAD_TURN_UP_DEGREES, -1, 1)
+    headX = filters.ensureMapRange(yaw, HEAD_TURN_LEFT_DEGREES, HEAD_TURN_RIGHT_DEGREES, -1, 1)
+    headY = filters.ensureMapRange(pitch, HEAD_TURN_UP_DEGREES, HEAD_TURN_UP_DEGREES, -1, 1)
     
     # deadzone for mouse look changes based on bMouseLookEnabled
     dz = DEADZONE_WHILE_MOUSELOOK_ENABLED if bMouseLookEnabled else DEADZONE_WHILE_MOUSELOOK_DISABLED
