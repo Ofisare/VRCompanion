@@ -22,7 +22,8 @@ class Environment:
             cls._instance.speech = None
             cls._instance.vigem = None
             cls._instance.VigemSide = None
-            
+            cls._instance.filters = None
+            cls._instance.diagnostics = None
             cls._instance.vrToGamepad = None
             cls._instance.vrToMouse = None
             

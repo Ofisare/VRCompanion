@@ -275,3 +275,4 @@
 /SharpDX.DirectInput.dll
 /SharpDX.XInput.dll
 /SharpDX.dll
+*.bak

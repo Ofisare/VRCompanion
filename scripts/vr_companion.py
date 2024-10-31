@@ -234,7 +234,7 @@ class SettingsForm(Form):
     
     def buttonPressed(self, sender, args):
     	self.Close()
-    	
+    
     def updatePressed(self, sender, args):
         self.startButton.Enabled = False
         self.updateButton.Enabled = False
@@ -456,7 +456,8 @@ if starting:
     environment.vigem = vigem
     environment.VigemSide = VigemSide
     environment.VigemAxis = VigemAxis
-    
+    environment.filters = filters
+    environment.diagnostics = diagnostics
     global profile
     if "profile" in globals():
         DebugOutput = False
