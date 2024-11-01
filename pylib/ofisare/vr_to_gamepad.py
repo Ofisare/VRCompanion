@@ -36,8 +36,7 @@ class VRToGamepad:
 
     def update(self, currentTime, deltaTime):
 
-        if self.beforeUpdate is not None:
-            self.beforeUpdate(self)
+        
 
         # map left trigger to left trigger
         if self.leftTriggerMode.current == 1:
@@ -61,10 +60,12 @@ class VRToGamepad:
             environment.vigem.SetStick(self.controller, environment.VigemSide.Left, environment.vr.rightStickAxes.x, environment.vr.rightStickAxes.y)
         
         if self.headMode.current == 1:
-            if self.headJoy.isActive():
+            self.headJoy.update()  
+            if self.beforeUpdate is not None:
+                self.beforeUpdate(self)
+
+            if self.headJoy.isActive:
                 environment.vigem.SetStick(self.controller, environment.VigemSide.Right, self.headJoy.x, self.headJoy.y)        
-            # else:
-            #     environment.vigem.SetStick(self.controller, environment.VigemSide.Right, 0, 0)
         # map right stick to right stick
         if self.rightStickMode.current == 1:
             environment.vigem.SetStick(self.controller, environment.VigemSide.Right, environment.vr.leftStickAxes.x, environment.vr.leftStickAxes.y)
