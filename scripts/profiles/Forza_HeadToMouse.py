@@ -10,15 +10,17 @@
 
 
 
-bMouseLookEnabled = False
+bMouseLookXEnabled = False
+bMouseLookYEnabled = False
 
 class hDirection:
-    global bMouseLookEnabled
+    global bMouseLookXEnabled
+    global bMouseLookYEnabled
 
-    def __init__(self, degrees , joyValue, deadZones = [0, 0]):
+    def __init__(self, maxDegrees , maxValue, deadZones = [0, 0]):
         # type: (int, float, List[float]) -> None
-        self.degrees = degrees # Maximum degrees of head rotation
-        self.value = joyValue   # Maximum value for joystick axis     
+        self.maxDegrees = maxDegrees # Maximum degrees of head rotation
+        self.maxValue = maxValue   # Maximum value for joystick axis     
         self._deadZones = [abs(deadZones[0]), abs(deadZones[1])] # (0-1)
         self._deadZoneIndex = 0
     
@@ -30,7 +32,7 @@ class hDirection:
     @property
     def deadZoneIndex(self):
         # type: () -> int        
-        return 1 if bMouseLookEnabled else 0
+        return 1 if bMouseLookXEnabled or bMouseLookYEnabled else 0
     
     def isActive(self, headValue):
     # type: (float) -> bool
@@ -46,35 +48,33 @@ DOWN_DIRECTION  = hDirection( 40, 1, FULLY_DISABLED)
 
 def afterUpdate(sender):
     # type: (VRToMouse) -> None
-    global bMouseLookEnabled
+    global bMouseLookXEnabled
+    global bMouseLookYEnabled
     global LEFT_DIRECTION 
     global RIGHT_DIRECTION
-    global UP_DIRECTION   
+    global UP_DIRECTION
     global DOWN_DIRECTION 
     
-    yaw = environment.vr.headPose.yaw
+    yaw = environment.vr.headPose.yaw    
+    headX = filters.ensureMapRange(yaw, LEFT_DIRECTION.maxDegrees, RIGHT_DIRECTION.maxDegrees, LEFT_DIRECTION.maxValue, RIGHT_DIRECTION.maxValue)
+    bMouseLookXEnabled = LEFT_DIRECTION.isActive(headX) or RIGHT_DIRECTION.isActive(headX) 
+    if not bMouseLookXEnabled:
+        sender.deltaX = 0        
+    
     pitch = environment.vr.headPose.pitch
-
-    #convert yaw and pitch to -1 to 1
-    headX = filters.ensureMapRange(yaw, LEFT_DIRECTION.degrees, RIGHT_DIRECTION.degrees, LEFT_DIRECTION.value, RIGHT_DIRECTION.value)
-    headY = filters.ensureMapRange(pitch, UP_DIRECTION.degrees, DOWN_DIRECTION.degrees, UP_DIRECTION.value, DOWN_DIRECTION.value)
-        
-    bMouseLookEnabled = LEFT_DIRECTION.isActive(headX) or RIGHT_DIRECTION.isActive(headX) \
-                        or UP_DIRECTION.isActive(headY) or  DOWN_DIRECTION.isActive(headY) 
+    headY = filters.ensureMapRange(pitch, UP_DIRECTION.maxDegrees, DOWN_DIRECTION.maxDegrees, UP_DIRECTION.maxValue, DOWN_DIRECTION.maxValue)
+    bMouseLookYEnabled = UP_DIRECTION.isActive(headY) or  DOWN_DIRECTION.isActive(headY) 
+    if not bMouseLookYEnabled:
+        sender.deltaY = 0
 
     # press right mouse button to enable mouse look
-    environment.mouse.rightButton = bMouseLookEnabled
-    
-    if not bMouseLookEnabled:
-        # disable mouse movement
-        sender.deltaX = 0
-        sender.deltaY = 0        
-    
+    environment.mouse.rightButton = bMouseLookXEnabled or bMouseLookYEnabled
 
     diagnostics.watch("{0}, {1}".format(headX, headY) , "head X,Y")
     diagnostics.watch(LEFT_DIRECTION.deadZone, "dzl")
     diagnostics.watch(RIGHT_DIRECTION.deadZone, "dzr")
-    diagnostics.watch(bMouseLookEnabled, "bMouseLookEnabled")
+    diagnostics.watch(bMouseLookXEnabled, "bMouseLookXEnabled")
+    diagnostics.watch(bMouseLookYEnabled, "bMouseLookYEnabled")
 
 
 vrToMouse.mode.current = 1
@@ -83,6 +83,3 @@ vrToMouse.enableRoll.current = True
 vrToMouse.mouseSensitivityX = 400
 vrToMouse.mouseSensitivityY = 300
 vrToMouse.afterUpdate = afterUpdate
-
-
-

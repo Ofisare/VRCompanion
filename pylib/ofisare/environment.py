@@ -22,11 +22,14 @@ class Environment:
             cls._instance.speech = None
             cls._instance.vigem = None
             cls._instance.VigemSide = None
+            
             cls._instance.filters = None
             cls._instance.diagnostics = None
+            cls._instance.curves = None
+
             cls._instance.vrToGamepad = None
             cls._instance.vrToMouse = None
-            
+            cls._instance.CurveDefault = None
             cls._instance.hapticPlayer = None
             cls._instance.touchHapticsPlayer = None
         return cls._instance

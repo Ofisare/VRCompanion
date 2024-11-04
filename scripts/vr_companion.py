@@ -48,6 +48,7 @@ def __init_plugins__():
     keyboard.getPressed(Key.Space)
     vigem.CreateController(VigemController.XBoxController)
     vigem.SetButtonState(VigemButton.A, True)
+    x = curve.Name
 
 
 #**************************************
@@ -458,6 +459,8 @@ if starting:
     environment.VigemAxis = VigemAxis
     environment.filters = filters
     environment.diagnostics = diagnostics
+    environment.curves = curves
+    
     global profile
     if "profile" in globals():
         DebugOutput = False

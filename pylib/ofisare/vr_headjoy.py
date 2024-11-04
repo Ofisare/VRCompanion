@@ -2,83 +2,67 @@ from .environment import environment
 
 class HeadJoystickDirection:
     
-    def __init__(self, maxDegrees , maxValue, deadZones = [0], antiDeadZone = 0):
-        # type: (int, float, List[float]) -> None
+    def __init__(self, isInverted, minDegrees, maxDegrees, minValue , maxValue, curve = None):
+        # type: (int, bool,float, float, float, float, CurveGlobal) -> None
         """
-        Initializes the VRHeadJoy object.
+        Initializes the VRHeadJoy object. (Note: All arguments should be positive values, for negative values use the bInverted flag)
         Args:
-            maxDegrees (int): Maximum degrees of head rotation.
-            antiDeadZone (float): Minimum value for axis output.(0-1). Defaults to 0.
-            maxValue (float): Maximum value for axis axis.
-            deadZones (List[float], optional): List of dead zone values (0-1). Defaults to [0].        
+            isInverted (bool, optional): Inverts the output value. Defaults to False.   
+            minDegrees (int): Minimum degrees of head rotation to produce output.
+            maxDegrees (int): Maximum degrees of head rotation to produce output.
+            minValue (float): Minimum value for axis output. (0-1). **Set to value greater than 0 to create an anti-deadzone.
+            maxValue (float): Maximum value for axis output. (0-1).
+            curve (Curve, optional): Curve to apply to the output value. Defaults to None.
         """
+        self.isInverted = isInverted
+        self.minDegrees = abs(minDegrees)
+        self.maxDegrees = abs(maxDegrees)
+        self.minValue = abs(minValue)
+        self.maxValue = abs(maxValue)
+        self.curve = curve
+
+        self.currentDegrees = 0.0
         
-        
-        self.currentDegrees = 0      # stores the current degrees of head rotation
-        self.maxDegrees = maxDegrees # Maximum degrees of head rotation
-        self.antiDeadZone = abs(antiDeadZone)     # Maximum value for joystick axis
-        self.maxValue = maxValue     # Maximum value for joystick axis
-        self._deadZones = deadZones 
-        self._currentDeadZoneIndex = 0 
-    
-    # get deadZone by index
-    @property
-    def deadZone(self):
-        # type: () -> float
-        return self._deadZones[self._currentDeadZoneIndex]
-    
-    # add a getter property for currentDeadZone
-    @property
-    def currentDeadZoneIndex(self):
-        # type: () -> int
-        return self._currentDeadZoneIndex
-    
-    # add a setter property for currentDeadZone
-    @currentDeadZoneIndex.setter
-    def currentDeadZoneIndex(self, value):
-        #type: (int) -> None    
-        if value < 0:
-            self._currentDeadZoneIndex = 0
-        elif value >= len(self._deadZones):
-            self._currentDeadZoneIndex = len(self._deadZones) - 1
-        else:
-            self._currentDeadZoneIndex = value
-    
     @property
     def value(self):
         # type: () -> float
-        minDegrees = self.maxDegrees * self.deadZone
-        if self.maxDegrees >= 0:
-            return environment.filters.ensureMapRange(self.currentDegrees, minDegrees, self.maxDegrees, self.antiDeadZone, self.maxValue)
+        retval = 0.0
+        #minDegrees = self.maxDegrees * self.deadZone
+        if not self.isActive:
+            retval = 0
         else:
-            return environment.filters.ensureMapRange(self.currentDegrees, self.maxDegrees, minDegrees, self.maxValue, -self.antiDeadZone)
+            retval = environment.filters.ensureMapRange(abs(self.currentDegrees), self.minDegrees, self.maxDegrees, self.minValue, self.maxValue)
+        
+        if(self.curve is not None):
+            #environment.diagnostics.debug("Curve is not None")
+            retval = self.curve.getY(retval)
+
+        if self.isInverted:
+            retval = -retval
+
+        return retval
 
     @property
     def isActive(self):
     # type: (float) -> bool
-        return abs(self.currentDegrees) > (abs(self.maxDegrees) * self.deadZone)
-        
+        return abs(self.currentDegrees) > self.minDegrees
     
 class HeadJoystick:
     
     def __init__(self):
         #self.bJoyLookEnabled = False
-        self.left  = HeadJoystickDirection(-40,-1)  
-        self.right = HeadJoystickDirection( 40, 1) 
-        self.up    = HeadJoystickDirection(-25,-1) 
-        self.down  = HeadJoystickDirection( 25, 1) 
+        self.left  = HeadJoystickDirection(True, 0, 40, 0, 1)  
+        self.right = HeadJoystickDirection(False,0, 40, 0, 1) 
+        self.up    = HeadJoystickDirection(True, 0, 25, 0, 1) 
+        self.down  = HeadJoystickDirection(False,0, 25, 0, 1) 
         self._yaw = 0
         self._pitch = 0
         
     def update(self):
-        # type: () -> None
-        self._yaw = environment.vr.headPose.yaw
-        self._pitch = environment.vr.headPose.pitch
+        # type: () -> None        
+        self.left.currentDegrees = self.right.currentDegrees = self._yaw = environment.vr.headPose.yaw
+        self.up.currentDegrees = self.down.currentDegrees = self._pitch = environment.vr.headPose.pitch
         
-        self.left.currentDegrees = self._yaw
-        self.right.currentDegrees = self._yaw
-        self.up.currentDegrees = self._pitch
-        self.down.currentDegrees = self._pitch
     
     @property
     def x(self):
