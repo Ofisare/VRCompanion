@@ -48,6 +48,7 @@ def __init_plugins__():
     keyboard.getPressed(Key.Space)
     vigem.CreateController(VigemController.XBoxController)
     vigem.SetButtonState(VigemButton.A, True)
+    x = curve.Name
 
 
 #**************************************
@@ -234,7 +235,7 @@ class SettingsForm(Form):
     
     def buttonPressed(self, sender, args):
     	self.Close()
-    	
+    
     def updatePressed(self, sender, args):
         self.startButton.Enabled = False
         self.updateButton.Enabled = False
@@ -456,6 +457,9 @@ if starting:
     environment.vigem = vigem
     environment.VigemSide = VigemSide
     environment.VigemAxis = VigemAxis
+    environment.filters = filters
+    environment.diagnostics = diagnostics
+    environment.curves = curves
     
     global profile
     if "profile" in globals():
@@ -563,6 +567,9 @@ if DebugOutput:
     diagnostics.watch(vr.headPose.position.y)
     diagnostics.watch(vr.headPose.position.z)
         
+    diagnostics.watch(vr.headPose.yaw)
+    diagnostics.watch(vr.headPose.pitch)
+    diagnostics.watch(vr.headPose.roll)
     diagnostics.watch(vr.leftTouchPose.position.x)
     diagnostics.watch(vr.leftTouchPose.position.y)
     diagnostics.watch(vr.leftTouchPose.position.z)
