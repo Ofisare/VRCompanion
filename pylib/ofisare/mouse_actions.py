@@ -14,9 +14,6 @@ class MouseAction(Action):
                 self._keys.extend(keys)
             else:
                 self._keys.append(keys)
-        self._duration = 0.035
-        self._time = 0
-        self._needUpdate = False
     
     def setKeyDown(self):
         pass
@@ -57,7 +54,7 @@ class MouseQuickPress(MouseAction):
     def __init__(self, keys):
         MouseAction.__init__(self, keys)
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         self.setKeyPressed()
 
 #**************************************************
@@ -67,19 +64,10 @@ class MousePress(MouseAction):
     def __init__(self, keys):
         MouseAction.__init__(self, keys)
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         # set the keys down
         self.setKeyDown()
-        # start the update timer to auto release when from voice activation
-        self._time = currentTime
-        self._needUpdate = fromVoiceRecognition
-            
-    def update(self, currentTime):
-        if self._needUpdate:
-            # determine if we should stop pressing the keys
-            if (currentTime - self._time) >= self._duration:
-                self.leave()
-
+        
     def leave(self):
         self.setKeyUp()
         self._needUpdate = False
@@ -94,7 +82,7 @@ class MouseToggle(MouseAction):
     def __init__(self, keys):
         MouseAction.__init__(self, keys)
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         self.setKeyPressed()
             
     def leave(self):
@@ -108,7 +96,7 @@ class MouseSwitchState(MouseAction):
         MouseAction.__init__(self, keys)
         self._down = False
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         if self._down:
             self.setKeyUp()
             self._down = False
@@ -128,7 +116,7 @@ class MouseSetState(MouseAction):
         MouseAction.__init__(self, keys)
         self.stateToSet = state
 
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         if self.stateToSet:
             self.setKeyDown()
         else:

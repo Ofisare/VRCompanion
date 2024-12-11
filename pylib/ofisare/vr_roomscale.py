@@ -112,6 +112,7 @@ class VRRoomscale:
     def __init__(self):
         self.yaw = VRRoomscaleAxis()
         self.pitch = VRRoomscaleAxis()
+        self.roll = VRRoomscaleAxis()
         
         self.horizontal = VRRoomscaleAxis()
         self.horizontal.sensitivity = 0.1
@@ -122,18 +123,19 @@ class VRRoomscale:
         self.headOrigin = Vector()
 
     def update(self, currentTime, deltaTime):
-        if self.yaw.mode.current == 0 and self.pitch.mode.current == 0 and self.horizontal.mode.current == 0 or self.vertical.mode.current == 0:
+        if self.yaw.mode.current == 0 and self.pitch.mode.current == 0 and self.roll.mode.current == 0 and self.horizontal.mode.current == 0 or self.vertical.mode.current == 0:
             return;
             
-        yawHead, pitchHead = getYawPitch(environment.vr.headPose)
         # fix yaw > math.pi
+        yawHead = environment.vr.headPose
         if self.yaw.current < yawHead - math.pi:
             yawHead = yawHead - 2 * math.pi
         elif self.yaw.current > yawHead + math.pi:
             yawHead = yawHead + 2 * math.pi
         
         self.updateCore(currentTime, deltaTime, self.yaw, yawHead)
-        self.updateCore(currentTime, deltaTime, self.pitch, -pitchHead)
+        self.updateCore(currentTime, deltaTime, self.pitch, -environment.vr.headPose.pitch)
+        self.updateCore(currentTime, deltaTime, self.roll, environment.vr.headPose.roll)
         
         headOffset = subtract(environment.vr.headPose.position, self.headOrigin)
         headOffset = rotateYaw(headOffset, -yawHead)
@@ -142,16 +144,17 @@ class VRRoomscale:
         self.updateCore(currentTime, deltaTime, self.vertical, -headOffset.z)
     
     def reset(self):
-        yawHead, pitchHead = getYawPitch(environment.vr.headPose)
         self.headOrigin = environment.vr.headPose.position
         
-        self.yaw.current = yawHead
-        self.yaw.center = yawHead
-        self.pitch.current = pitchHead
+        self.yaw.current = environment.vr.headPose.yaw
+        self.yaw.center = environment.vr.headPose.yaw
+        self.pitch.current = environment.vr.headPose.pitch
+        self.roll.current = environment.vr.headPose.roll
         self.horizontal.current = 0
         self.vertical.current = 0
         
         self.yaw.stopMovement()
         self.pitch.stopMovement()
+        self.roll.stopMovement()
         self.horizontal.stopMovement()
         self.vertical.stopMovement()

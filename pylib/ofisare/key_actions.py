@@ -14,21 +14,18 @@ class KeyAction(Action):
                 self._keys.extend(keys)
             else:
                 self._keys.append(keys)
-        self._duration = 0.035
-        self._time = 0
-        self._needUpdate = False
-    
+        
     def setKeyDown(self):
         for key in self._keys:
-            environment.keyboard.setKeyDown(key)
+            environment.keyboard.setKey(key, True)
         
     def setKeyUp(self):
         for key in self._keys:
-            environment.keyboard.setKeyUp(key)
+            environment.keyboard.setKey(key, False)
     
     def setKeyPressed(self):
         for key in self._keys:
-            environment.keyboard.setPressed(key)
+            environment.keyboard.tapKey(key)
 
 #********************************************************
 # Action class to press and releases a key when entering
@@ -37,7 +34,7 @@ class KeyQuickPress(KeyAction):
     def __init__(self, keys):
         KeyAction.__init__(self, keys)
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         self.setKeyPressed()
 
 #****************************************************************************************
@@ -47,23 +44,13 @@ class KeyPress(KeyAction):
     def __init__(self, keys):
         KeyAction.__init__(self, keys)
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         # set the keys down
         self.setKeyDown()
-        # start the update timer to auto release when from voice activation
-        self._time = currentTime
-        self._needUpdate = fromVoiceRecognition
-            
-    def update(self, currentTime):
-        if self._needUpdate:
-            # determine if we should stop pressing the keys
-            if (currentTime - self._time) >= self._duration:
-                self.leave()
-
+        
     def leave(self):
         self.setKeyUp()
-        self._needUpdate = False
-
+        
     def reset(self):
         self.leave()
 
@@ -76,7 +63,7 @@ class KeyToggle(KeyAction):
         
     def enter(self, currentTime, fromVoiceRecognition):
         self.setKeyPressed()
-            
+        
     def leave(self):
         self.setKeyPressed()
         
@@ -88,7 +75,7 @@ class KeySwitchState(KeyAction):
         KeyAction.__init__(self, keys)
         self._down = False
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         if self._down:
             self.setKeyUp()
             self._down = False
@@ -108,7 +95,7 @@ class KeySetState(KeyAction):
         KeyAction.__init__(self, keys)
         self.stateToSet = state
 
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         if self.stateToSet:
             self.setKeyDown()
         else:

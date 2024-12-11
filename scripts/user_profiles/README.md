@@ -6,8 +6,30 @@ The OpenXR API is the only api that allows FreePIE to block all mappings of cont
 
 This way the profile can be freely defined without accidentally triggering other ingame actions (like shooting the rocket launcher at your feets when you actually wanted to grab the pistol).
 
-If you just want to enhance the existing interaction mapping of for instance UEVR or any other game/application just use:
-`vr..configureInput(OpenXR_All)`
+If you just want to enhance the existing interaction mapping of for instance UEVR or any other game/application you can use the following values:
+- OpenXR_LeftGrip
+- OpenXR_LeftTrigger
+- OpenXR_RightGrip
+- OpenXR_RightTrigger
+- OpenXR_A
+- OpenXR_B
+- OpenXR_X
+- OpenXR_Y
+- OpenXR_LeftX
+- OpenXR_LeftY
+- OpenXR_LeftClick
+- OpenXR_RightX
+- OpenXR_RightY
+- OpenXR_RightClick
+- OpenXR_All
+
+Apply their combination with `vr.configureInput(OpenXR_RightGrip | OpenXR_RightTrigger)`
+
+You can also block individual sticks and buttons using the following bitwise ored values:
+
+
+Be aware, that UEVR tracks availability of controllers by checking interactions with sticks and buttons.
+So disabling all (as default) requires to set "controller test mode" under debug settings in UEVR.
 
 
 ## Gestures

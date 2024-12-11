@@ -122,7 +122,7 @@ class Gesture:
                 if valid:
                     self.playHaptics(currentTime, haptics.enter, haptics.touchEnter)
                     if self.action != None:
-                        self.action.enter(currentTime, False)
+                        self.action.enter(currentTime)
                     self.inGesture = True
                 
         # block other gestures from using trigger or grip
@@ -143,7 +143,7 @@ class Gesture:
         # gesture entered, check whether to leave or stay in gesture
         if self.inTriggerGesture:
             if gestureValidation.triggerUsed == True or value > self.upperThreshold or gestureValidation.trigger < self.triggerLowerThreshold:
-                self.playHaptics(currentTime, haptics.leave, haptics.touchLeave)    
+                self.playHaptics(currentTime, haptics.leave, haptics.touchLeave)
                 if self.triggerAction != None:
                     self.triggerAction.leave()
                 self.inTriggerGesture = False
@@ -158,7 +158,7 @@ class Gesture:
                 # enter gesture if eveything is fine
                 self.playHaptics(currentTime, haptics.enter, haptics.touchEnter)
                 if self.triggerAction != None:
-                    self.triggerAction.enter(currentTime, False)
+                    self.triggerAction.enter(currentTime)
                 self.inTriggerGesture = True
                 
         # block other gestures from using trigger
@@ -189,7 +189,7 @@ class Gesture:
                 # enter gesture if eveything is fine
                 self.playHaptics(currentTime, haptics.enter, haptics.touchEnter)
                 if self.gripAction != None:
-                    self.gripAction.enter(currentTime, False)
+                    self.gripAction.enter(currentTime)
                 self.inGripGesture = True
                 
         # block other gestures from using trigger
@@ -243,3 +243,24 @@ class LocationBasedGesture(Gesture):
     def __init__(self, lowerThreshold, upperThreshold, offset):
         Gesture.__init__(self, lowerThreshold, upperThreshold)
         self.offset = offset
+
+#**********************************************************
+# Special class for gestures based on keyboard interaction
+#**********************************************************
+class KeyboardBasedGesture(Gesture):
+    def __init__(self, key):
+        Gesture.__init__(self, 0, 1)
+        self.key = key
+
+#**********************************************************
+# Special class for gestures based on mouse interaction
+#**********************************************************
+class MouseBasedGesture(Gesture):
+    def __init__(self, lowerThreshold, upperThreshold, axis):
+        Gesture.__init__(self, lowerThreshold, upperThreshold)
+        self.axis = axis
+
+class MouseButtonBasedGesture(Gesture):
+    def __init__(self, button):
+        Gesture.__init__(self, 0, 1)
+        self.button = button

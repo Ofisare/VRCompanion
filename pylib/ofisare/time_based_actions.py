@@ -17,7 +17,10 @@ class ActionSequence(Action):
         self._actions = actions
         self._index = 0
         self._time = 0
-        
+    
+    def duration(self):
+        return sum(a.duration for a in self._actions)
+    
     def getCurrentHaptics(self):
         if self._index < len(self._actions):
             haptics = self._actions[self._index].action.getCurrentHaptics() 
@@ -25,10 +28,10 @@ class ActionSequence(Action):
                 return haptics
         return self.haptics
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         self._index = 0
         self._time = currentTime
-        self._actions[self._index].action.enter(currentTime, False)
+        self._actions[self._index].action.enter(currentTime)
     
     def update(self, currentTime):
         if self._index >= len(self._actions):
@@ -41,7 +44,7 @@ class ActionSequence(Action):
             self._index = self._index + 1
             self._time = currentTime
             if self._index < len(self._actions):
-                self._actions[self._index].action.enter(currentTime, False)                
+                self._actions[self._index].action.enter(currentTime)
     
     def leave(self):
         if self._index < len(self._actions):
@@ -65,7 +68,7 @@ class ActionRepeat(Action):
         Action.__init__(self)
         self._action = action
         self._times = times-1
-        self._actionDuration = actionDuration        
+        self._actionDuration = actionDuration
         self._timeInterval = timeInterval
         
         #internally used variables
@@ -73,26 +76,29 @@ class ActionRepeat(Action):
         self._active = False
         self._needUpdate = False
         
+    def duration(self):
+        if self._times > 0:
+            return self._times * self._timeInterval
+        else
+            return self._timeInterval
+    
     def getCurrentHaptics(self):
         haptics = self._action.getCurrentHaptics() 
         if haptics != None:
             return haptics
         return self.haptics
     
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         # activate action
-        self._action.enter(currentTime, False)
+        self._action.enter(currentTime)
         self._active = True
         
         # start the update timer
         self._time = currentTime
         self._needUpdate = True
         
-        if fromVoiceRecognition and self._times == -1:
-            self._timesLeft = 0
-        else:
-            self._timesLeft = self._times
-            
+        self._timesLeft = self._times
+        
     def update(self, currentTime):
         if self._needUpdate:
             elapsedTime = currentTime - self._time
@@ -105,13 +111,13 @@ class ActionRepeat(Action):
                 self._action.leave()
                 self._active = False
         
-                # End the update if the last key has been released
+                # End the update if the last repetion has been finished
                 if (self._timesLeft == 0):
                     self._needUpdate = False
                     
                 # check for end of pause
                 if (elapsedTime >= self._timeInterval):
-                    self._action.enter(currentTime, False)
+                    self._action.enter(currentTime)
                     self._active = True
                     
                     self._time = currentTime
@@ -148,10 +154,7 @@ class TimeBased(Action):
             return haptics
         return self.haptics
         
-    def enter(self, currentTime, fromVoiceRecognition):
-        if fromVoiceRecognition:
-            raise Exception("Time based actions don't support voice commands")
-    
+    def enter(self, currentTime):
         # start the update timer to be able to distinguish actions
         self._time = currentTime
         self._inLongAction = False
@@ -161,13 +164,13 @@ class TimeBased(Action):
             self._actions[1].update(currentTime)
         elif currentTime - self._time > self._duration:
             self._inLongAction = True
-            self._actions[1].enter(currentTime, False)
+            self._actions[1].enter(currentTime)
         
     def leave(self):
         if self._inLongAction:
             self._actions[1].leave()
         else:
-            self._actions[0].enter(self._time, False)
+            self._actions[0].enter(self._time)
             self._actions[0].leave()
         self._inLongAction = False
 
