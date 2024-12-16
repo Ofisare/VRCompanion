@@ -15,8 +15,8 @@ diagnostics.watchObject(joystick[g27].config)
 diagnostics.watchObject(joystick[g27].count)
 diagnostics.watchObject(joystick[g27], "x","y","rotationZ")
 diagnostics.watch(joystick[g27].pov[0])
-
-
+diagnostics.watch(joystick[g27].dpad[0])
+diagnostics.watch(joystick[g27].buttons)
 # watch all joystick properties
 #diagnostics.watchObject(joystick[g27])
 
