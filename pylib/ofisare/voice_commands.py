@@ -8,7 +8,7 @@ from .dispatcher import DispatchAction
 class VoiceCommand:
     def __init__(self, cmd, action, haptics):
         self.cmd = cmd
-        if isinstance(action, ActionSequence) or isinstance(action, ActionRepeat:
+        if isinstance(action, ActionSequence) or isinstance(action, ActionRepeat):
             self.action = DispatchAction(action, action.duration)
         elif isinstance(action, DispatchAction):
             self.action = action
@@ -17,7 +17,7 @@ class VoiceCommand:
         self.haptics = haptics
         
     def said(self, confidence):
-        return ((self.cmd != "") and environment.speech.said(self.cmd, confidence))
+        return (self.cmd != "") and environment.speech.said(self.cmd, confidence)
      
     def playHaptics(self, currentTime):    
         if environment.hapticPlayer != None and self.haptics != None:
@@ -41,6 +41,13 @@ class VoiceCommands:
 
     def addCommand(self, cmd, action = None, haptics = None):
         self.commands.append( VoiceCommand(cmd, action, haptics) )
+
+    def update(self, currentTime):
+        for command in self.commands:
+            # if said execute action
+            if command.said(self.confidenceLevel):
+                command.playHaptics(currentTime)
+                command.execute(currentTime)
 
     def reset(self):
         for command in self.commands:

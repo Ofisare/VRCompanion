@@ -1,4 +1,5 @@
 from .environment import environment
+from .basic_actions import Action
 
 #*********************************************************************
 # Special class to dispatch an action from a gesture or voice control

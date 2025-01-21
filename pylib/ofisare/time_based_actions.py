@@ -79,7 +79,7 @@ class ActionRepeat(Action):
     def duration(self):
         if self._times > 0:
             return self._times * self._timeInterval
-        else
+        else:
             return self._timeInterval
     
     def getCurrentHaptics(self):

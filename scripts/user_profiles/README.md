@@ -25,9 +25,6 @@ If you just want to enhance the existing interaction mapping of for instance UEV
 
 Apply their combination with `vr.configureInput(OpenXR_RightGrip | OpenXR_RightTrigger)`
 
-You can also block individual sticks and buttons using the following bitwise ored values:
-
-
 Be aware, that UEVR tracks availability of controllers by checking interactions with sticks and buttons.
 So disabling all (as default) requires to set "controller test mode" under debug settings in UEVR.
 
