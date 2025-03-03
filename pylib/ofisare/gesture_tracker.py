@@ -114,6 +114,15 @@ class GestureTracker:
             self.shoulderWeaponRight
         ]
         
+        # a list of all keyboard based gestures
+        self._keyboardBasedGestures = []
+        
+        # a list of all mouse based gestures
+        self._mouseBasedGestures = []
+        
+        # a list of all keyboard based gestures
+        self._mouseButtonBasedGestures = []
+        
         # a list of all gestures for reset
         self._allGestures = [
             self.aimPistol,
@@ -178,7 +187,25 @@ class GestureTracker:
             self._locationBasedGesturesRight.append(gesture)
         self._allGestures.append(gesture)
         return gesture
+    
+    def addKeyboardBasedGesture(self, key):
+        gesture = KeyboardBasedGesture(key)
+        self._keyboardBasedGestures.append(gesture)
+        self._allGestures.append(gesture)
+        return gesture
    
+    def addMouseBasedGesture(self, lowerThreshold, upperThreshold, axis):
+        gesture = MouseBasedGesture(lowerThreshold, upperThreshold, key)
+        self._mouseBasedGestures.append(gesture)
+        self._allGestures.append(gesture)
+        return gesture
+    
+    def addMouseButtonBasedGesture(self, button):
+        gesture = MouseButtonBasedGesture(button)
+        self._mouseButtonBasedGestures.append(gesture)
+        self._allGestures.append(gesture)
+        return gesture
+    
     def reset(self):
         for gesture in self._allGestures:
             gesture.reset()
@@ -193,6 +220,35 @@ class GestureTracker:
         noneValidation = GestureValidation(1,1)
         
         item = self._inventory.get()
+        
+        # check keyboard gestures
+        for gesture in self._keyboardBasedGestures:
+            if gesture.enabled:
+                gesture.update(currentTime, 10 if environment.keyboard.getKey(gesture.key) else 0, noneValidation)
+        
+        # a list of all mouse based gestures
+        for gesture in self._mouseBasedGestures:
+            if gesture.enabled:
+                value = 0
+                if gesture.axis == 0:
+                    value = environment.mouse.deltaX
+                elif gesture.axis == 1:
+                    value = environment.mouse.deltaY
+                else:
+                    value = environment.mouse.wheel
+                gesture.update(currentTime, value, noneValidation)
+        
+        # a list of all keyboard based gestures
+        for gesture in self._mouseButtonBasedGestures:
+            if gesture.enabled:
+                value = 0
+                if gesture.button == -1:
+                    value = 10 if environment.mouse.wheelDown else 0
+                elif gesture.button == -2:
+                    value = 10 if environment.mouse.wheelUp else 0
+                else:
+                    value = 10 if environment.mouse.getuBtton(gesture.button) else 0
+                gesture.update(currentTime, value, noneValidation)
         
         if self.lowerAreaLeft.enabled:
             self.lowerAreaLeft.update(currentTime, environment.vr.leftTouchPose.position.y - environment.vr.headPose.position.y, leftValidation)
@@ -289,12 +345,11 @@ class GestureTracker:
             self.duck.update(currentTime, environment.vr.headPose.position.y - environment.headController.standingHeight, noneValidation)
         
         # head based lean support
-        roll = getRoll(environment.vr.headPose)
         if self.leanLeft.enabled:
-            self.leanLeft.update(currentTime, roll - environment.rollCenter, noneValidation)
+            self.leanLeft.update(currentTime, environment.vr.headPose.roll - environment.rollCenter, noneValidation)
         
         if self.leanRight.enabled:
-            self.leanRight.update(currentTime, environment.rollCenter - roll, noneValidation)
+            self.leanRight.update(currentTime, environment.rollCenter - environment.vr.headPose.roll, noneValidation)
 
         # left hand based use
         if self.useLeft.enabled:

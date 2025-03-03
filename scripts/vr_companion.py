@@ -96,13 +96,14 @@ def reset():
     rollCenter = 0 #gestureTracker.roll(vr.headPose)
     
     # unpress all buttons
-    gestureSets.getCurrentGestureSet().reset()
+    gestureSets.getCurrentGestureSet().reset()    
     v2k.reset()
     vrToMouse.reset()
     vrToGamepad.reset()
     vrRoomscale.reset()
     for controller in vrControllers.values():
         controller.reset()
+    environment.dispatcher.reset()
 
 # getting new information from device
 def update():
@@ -136,6 +137,9 @@ def update():
     
     for controller in vrControllers.values():
         controller.update(currentTime, deltaTime)
+    
+    # perform dispatched action updates
+    environment.dispatcher.update(currentTime)
     
     # perform touch haptics
     touchHapticsPlayer.update(deltaTime)
@@ -321,7 +325,25 @@ def selectProfile():
     VrController_Gamepad = 20
     
     # possible openXR interaction settings
-    OpenXR_All = 1
+    vr.configureInput(4294967295)
+    OpenXR_All = 0
+    # grip and trigger
+    OpenXR_LeftGrip = 1
+    OpenXR_LeftTrigger = 2 * OpenXR_LeftGrip
+    OpenXR_RightGrip = 2 * OpenXR_LeftTrigger
+    OpenXR_RightTrigger = 2 * OpenXR_RightGrip
+    # buttons
+    OpenXR_A = 2 * OpenXR_RightTrigger
+    OpenXR_B = 2 * OpenXR_A
+    OpenXR_X = 2 * OpenXR_B
+    OpenXR_Y = 2 * OpenXR_X
+    # sticks
+    OpenXR_LeftX = 2 * OpenXR_X
+    OpenXR_LeftY = 2 * OpenXR_LeftX
+    OpenXR_LeftClick = 2 * OpenXR_LeftY
+    OpenXR_RightX = 2 * OpenXR_LeftClick
+    OpenXR_RightY = 2 * OpenXR_RightX
+    OpenXR_RightClick = 2 * OpenXR_RightY
     
     # possible validation modes
     GestureValidation_None = -1
@@ -432,7 +454,7 @@ def selectProfile():
               
 # initialization of state and constants
 if starting:
-    requiredVersion = "2.0"
+    requiredVersion = "2.1"
     compatibleVersion = True
     try:
         if diagnostics.version() < requiredVersion:
@@ -457,6 +479,7 @@ if starting:
     environment.vigem = vigem
     environment.VigemSide = VigemSide
     environment.VigemAxis = VigemAxis
+    environment.dispatcher = Dispatcher()
     environment.filters = filters
     environment.diagnostics = diagnostics
     environment.curves = curves

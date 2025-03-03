@@ -14,9 +14,6 @@ class GamepadAction(Action):
                 self._keys.extend(keys)
             else:
                 self._keys.append(keys)
-        self._duration = 0.035
-        self._time = 0
-        self._needUpdate = False
     
     def setKeyDown(self):
         global vrToGamepad
@@ -37,25 +34,10 @@ class GamepadQuickPress(GamepadAction):
     def __init__(self, keys):
         GamepadAction.__init__(self, keys)
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         # set the keys down
         self.setKeyDown()
-        # start the update timer to auto release when from voice activation
-        self._time = currentTime
-        self._needUpdate = True
-            
-    def update(self, currentTime):
-        if self._needUpdate:
-            # determine if we should stop pressing the keys
-            if (currentTime - self._time) >= self._duration:
-                self.leave()
-
-    def leave(self):
         self.setKeyUp()
-        self._needUpdate = False
-
-    def reset(self):
-        self.leave()
 
 #****************************************************************************************
 # Action class to handle press a key when entering and holding until it leaves a gesture 
@@ -67,19 +49,9 @@ class GamepadPress(GamepadAction):
     def enter(self, currentTime, fromVoiceRecognition):
         # set the keys down
         self.setKeyDown()
-        # start the update timer to auto release when from voice activation
-        self._time = currentTime
-        self._needUpdate = fromVoiceRecognition
-            
-    def update(self, currentTime):
-        if self._needUpdate:
-            # determine if we should stop pressing the keys
-            if (currentTime - self._time) >= self._duration:
-                self.leave()
-
+        
     def leave(self):
         self.setKeyUp()
-        self._needUpdate = False
 
     def reset(self):
         self.leave()

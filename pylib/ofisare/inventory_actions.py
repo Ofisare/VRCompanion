@@ -58,7 +58,7 @@ class InventorySelect(Action):
         self._inventory = inventory
         self._item = item
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         self._inventory.current = self._item
 
 #***********************************************************
@@ -71,7 +71,7 @@ class InventoryByNameSelect(KeyAction):
         self._inventory = inventory
         self._itemName = itemName
         
-    def enter(self, currentTime, fromVoiceRecognition):    
+    def enter(self, currentTime):    
         self._inventory.current = self._inventory.getKey(self._itemName)
         
         keys = self._inventory.getKeys()
@@ -94,5 +94,5 @@ class InventoryReplace(Action):
         self._inventory = inventory
         self._feedback = feedback
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         self._inventory.set(self._inventory.current, self._feedback)

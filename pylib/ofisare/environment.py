@@ -11,6 +11,7 @@ class Environment:
             cls._instance.updateFrequency = 1.0 / 60.0            
             cls._instance.openVR = None
             cls._instance.freePieIO = None
+            cls._instance.dispatcher = None
             
             cls._instance.headController = None
             cls._instance.leftController = None

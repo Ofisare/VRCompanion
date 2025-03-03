@@ -32,11 +32,11 @@ class ModeBasedAction(Action):
                 return haptics
         return self.haptics
 
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         self._activeMode = self._mode.current
         action = self.getCurrentAction()
         if action != None:
-            action.enter(currentTime, fromVoiceRecognition)
+            action.enter(currentTime)
     
     def update(self, currentTime):
 
@@ -73,11 +73,7 @@ class ModeSwitch(Action):
             else:
                 self._modes.append(modes)
         self._selectedMode = selectedMode
-        
-    def enter(self, currentTime, fromVoiceRecognition):
-        if fromVoiceRecognition:
-            self.leave()
-        
+    
     def leave(self):
         for mode in self._modes:
             mode.current = self._selectedMode
@@ -105,7 +101,7 @@ class ModeSwitchWithReset(Action):
         self._resetMode = resetMode
         self._lastMode = mode.current
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         self._lastMode = self._mode.current # remember last mode to reset
         self._mode.current = self._selectedMode
     

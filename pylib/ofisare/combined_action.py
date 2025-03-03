@@ -32,10 +32,7 @@ class CombinedAction(Action):
         self._entered = False
         self._counterActive = False
     
-    def enter(self, currentTime, fromVoiceRecognition):
-        if fromVoiceRecognition:
-            raise Exception("CombinedActions don't support voice commands")
-        
+    def enter(self, currentTime):        
         self._entered = True
         self._counter.increase()
         

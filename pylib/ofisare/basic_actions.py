@@ -8,7 +8,7 @@ class Action:
     def getCurrentHaptics(self):
         return self.haptics
 
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         pass
     
     def update(self, currentTime):
@@ -35,9 +35,9 @@ class MultiAction(Action):
                 return haptics                
         return self.haptics
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         for action in self._actions:
-            action.enter(currentTime, fromVoiceRecognition)
+            action.enter(currentTime)
     
     def update(self, currentTime):
         for action in self._actions:
@@ -72,8 +72,8 @@ class ActionSplit(Action):
             return haptics
         return self.haptics
         
-    def enter(self, currentTime, fromVoiceRecognition):
-        self._actions[0].enter(currentTime, fromVoiceRecognition)
+    def enter(self, currentTime):
+        self._actions[0].enter(currentTime)
         self._actions[0].leave()
         self._inAction = True
         self._lastTime = currentTime
@@ -82,7 +82,7 @@ class ActionSplit(Action):
         self._lastTime = currentTime
             
     def leave(self):
-        self._actions[1].enter(self._lastTime, False)
+        self._actions[1].enter(self._lastTime)
         self._actions[1].leave()
         self._inAction = False
 

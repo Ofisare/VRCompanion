@@ -1,6 +1,7 @@
 from .auto_updater import *
 from .basic_actions import *
 from .combined_action import *
+from .dispatcher import *
 from .environment import environment
 from .gamepad_actions import *
 from .gesture_sets import *
