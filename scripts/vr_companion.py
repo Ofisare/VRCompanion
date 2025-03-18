@@ -586,6 +586,8 @@ if DebugOutput:
     # debugging
     diagnostics.watch(vr.isMounted)
     
+    diagnostics.watch(len(environment.dispatcher._actions))
+    
     diagnostics.watch(vr.headPose.position.x)
     diagnostics.watch(vr.headPose.position.y)
     diagnostics.watch(vr.headPose.position.z)

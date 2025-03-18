@@ -116,13 +116,13 @@ gestureTracker.holsterInventoryLeft.enabled = True
 gestureTracker.holsterInventoryLeft.gripAction = KeyPress(Key.Q)
 
 # Communication via voice
-v2k.addCommand("destroy", KeyPress(Key.F1), "Voice Feedback")
-v2k.addCommand("Form", KeyPress(Key.F2), "Voice Feedback")
-v2k.addCommand("Secure", KeyPress(Key.F3), "Voice Feedback")
-v2k.addCommand("Recall", KeyPress(Key.F4), "Voice Feedback")
+#v2k.addCommand("destroy", KeyPress(Key.F1), "Voice Feedback")
+#v2k.addCommand("Form", KeyPress(Key.F2), "Voice Feedback")
+#v2k.addCommand("Secure", KeyPress(Key.F3), "Voice Feedback")
+#v2k.addCommand("Recall", KeyPress(Key.F4), "Voice Feedback")
 
-v2k.addCommand("Save", KeyPress(Key.F5), "Voice Feedback")
-v2k.addCommand("Quick Load", KeyPress(Key.F9), "Voice Feedback")
+#v2k.addCommand("Save", KeyPress(Key.F5), "Voice Feedback")
+#v2k.addCommand("Quick Load", KeyPress(Key.F9), "Voice Feedback")
 
 # Main Menu: button X (Escape)
 gestureTracker.buttonX.enabled = True
@@ -130,9 +130,9 @@ gestureTracker.buttonX.action = KeyPress(Key.Escape)
 
 # Revive Screen interaction: right stick up and down + button Y
 gestureTracker.buttonRightStickUp.enabled = True
-gestureTracker.buttonRightStickUp.action = KeyPress(Key.UpArrow)
+gestureTracker.buttonRightStickUp.action = KeyPress(Key.Up)
 gestureTracker.buttonRightStickDown.enabled = True
-gestureTracker.buttonRightStickDown.action = KeyPress(Key.DownArrow)
+gestureTracker.buttonRightStickDown.action = KeyPress(Key.Down)
 gestureTracker.buttonY.enabled = True
 gestureTracker.buttonY.action = KeyPress(Key.Return)
 

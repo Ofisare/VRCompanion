@@ -46,7 +46,7 @@ class GamepadPress(GamepadAction):
     def __init__(self, keys):
         GamepadAction.__init__(self, keys)
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         # set the keys down
         self.setKeyDown()
         
@@ -63,7 +63,7 @@ class GamepadToggle(GamepadAction):
     def __init__(self, keys):
         GamepadAction.__init__(self, keys)
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         self.setKeyPressed()
             
     def leave(self):
@@ -77,7 +77,7 @@ class GamepadSwitchState(GamepadAction):
         GamepadAction.__init__(self, keys)
         self._down = False
         
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         if self._down:
             self.setKeyUp()
             self._down = False
@@ -97,7 +97,7 @@ class GamepadSetState(GamepadAction):
         GamepadAction.__init__(self, keys)
         self.stateToSet = state
 
-    def enter(self, currentTime, fromVoiceRecognition):
+    def enter(self, currentTime):
         if self.stateToSet:
             self.setKeyDown()
         else:

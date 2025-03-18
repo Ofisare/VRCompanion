@@ -70,13 +70,13 @@ class VRToMouse:
         # get head orientation
         
         if self.mode.current == 1:
-            yawTarget = environment.vr.headPose.yaw
-            pitchTarget = environment.vr.headPose.pitch
+            yawTarget = environment.vr.headPose.yawRaw
+            pitchTarget = environment.vr.headPose.pitchRaw
         elif self.mode.current == 2:
             # left controller
             if self.useControllerOrientation:
-                yawTarget = environment.vr.leftTouchPose.yaw + self._yawOffset
-                pitchTarget = environment.vr.leftTouchPose.pitch + self._pitchOffset
+                yawTarget = environment.vr.leftTouchPose.yawRaw + self._yawOffset
+                pitchTarget = environment.vr.leftTouchPose.pitchRaw + self._pitchOffset
             else:
                 dx = environment.vr.leftTouchPose.position.x - environment.vr.headPose.position.x
                 dy = environment.vr.leftTouchPose.position.y - environment.vr.headPose.position.y
@@ -87,8 +87,8 @@ class VRToMouse:
         elif self.mode.current == 3:
             # right controller
             if self.useControllerOrientation:
-                yawTarget = environment.vr.rightTouchPose.yaw + self._yawOffset
-                pitchTarget = environment.vr.rightTouchPose.pitch + self._pitchOffset
+                yawTarget = environment.vr.rightTouchPose.yawRaw + self._yawOffset
+                pitchTarget = environment.vr.rightTouchPose.pitchRaw + self._pitchOffset
             else:
                 dx = environment.vr.rightTouchPose.position.x - environment.vr.headPose.position.x
                 dy = environment.vr.rightTouchPose.position.y - environment.vr.headPose.position.y
@@ -102,23 +102,23 @@ class VRToMouse:
                 self._yawOffset = 0
                 self._pitchOffset = 0
                 
-                yawChange = environment.vr.headPose.yaw - self._yaw                
+                yawChange = environment.vr.headPose.yawRaw - self._yaw                
                 if yawChange > math.pi:
                     yawChange = yawChange - math.pi * 2
                 elif yawChange < -math.pi:
                     yawChange = yawChange + math.pi * 2
                     
-                pitchChange = environment.vr.headPose.pitch - self._pitch
+                pitchChange = environment.vr.headPose.pitchRaw - self._pitch
                 
                 self._yaw = environment.vr.headPose.yaw
                 self._pitch = environment.vr.headPose.pitch
             else:
-                self._yawOffset = environment.vr.headPose.yaw - yawTarget
-                self._pitchOffset = environment.vr.headPose.pitch - pitchTarget
+                self._yawOffset = environment.vr.headPose.yawRaw - yawTarget
+                self._pitchOffset = environment.vr.headPose.pitchRaw - pitchTarget
                 yawChange = 0
                 pitchChange = 0
-                self._yaw = environment.vr.headPose.yaw
-                self._pitch = environment.vr.headPose.pitch
+                self._yaw = environment.vr.headPose.yawRaw
+                self._pitch = environment.vr.headPose.pitchRaw
             self._lastMode = self.mode.current
         else:
             # apply offset and changes to view and mouse movement
@@ -154,20 +154,20 @@ class VRToMouse:
         
         # communicate to reshade
         if self.enableYawPitch.current:
-            yaw = environment.vr.headPose.yaw - self._yaw            
+            yaw = environment.vr.headPose.yawRaw - self._yaw            
             if yaw > math.pi:
                 yaw = yaw - math.pi * 2
             elif yaw < -math.pi:
                 yaw = yaw + math.pi * 2
         
             environment.freePieIO[0].yaw = yaw
-            environment.freePieIO[0].pitch = self._pitch - environment.vr.headPose.pitch
+            environment.freePieIO[0].pitch = self._pitch - environment.vr.headPose.pitchRaw
         else:
             environment.freePieIO[0].yaw = 0
             environment.freePieIO[0].pitch = 0
             
         if self.enableRoll.current:
-            environment.freePieIO[0].roll = -environment.vr.headPose.roll
+            environment.freePieIO[0].roll = -environment.vr.headPose.rollRaw
         else:
             environment.freePieIO[0].roll = 0
 

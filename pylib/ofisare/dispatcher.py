@@ -12,7 +12,7 @@ class DispatchAction(Action):
         self._time = 0
        
     def getCurrentHaptics(self):
-        haptics = action.getCurrentHaptics()
+        haptics = self._action.getCurrentHaptics()
         if haptics != None:
             return haptics
         return self.haptics
@@ -27,7 +27,7 @@ class DispatchAction(Action):
     def updateFromDispatcher(self, currentTime):
         if environment.dispatcher == None:
             return False
-        if self._action._duration > currentTime - self._time:
+        if self._duration < currentTime - self._time:
             self._time = 0
             self._action.leave()
             return True
@@ -51,8 +51,9 @@ class Dispatcher:
     def addAction(self, action):
         self._actions.append(action)
         
-    def removeAction(self, action):
-        self._actions.remove(action)
+    def removeAction(self, action):    
+        if action in self._actions:
+            self._actions.remove(action)
 
     def update(self, currentTime):
         finishedActions = []
