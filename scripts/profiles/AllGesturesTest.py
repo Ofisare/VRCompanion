@@ -5,11 +5,11 @@ breast.haptics.touchEnter =  Touch_Enter_Left
 breast.gripAction = KeyPress(Key.B)
 
 gestureTracker.aimPistol.enabled = True
-gestureTracker.aimPistol.action = KeyPress(Key.NumberPadPlus)		
+gestureTracker.aimPistol.action = KeyPress(Key.Add)		
 gestureTracker.aimRifleLeft.enabled = True
-gestureTracker.aimRifleLeft.action = KeyPress(Key.NumberPadMinus)	
+gestureTracker.aimRifleLeft.action = KeyPress(Key.Subtract)	
 gestureTracker.aimRifleRight.enabled = True
-gestureTracker.aimRifleRight.action = KeyPress(Key.NumberPadStar)
+gestureTracker.aimRifleRight.action = KeyPress(Key.Multiply)
 		
 gestureTracker.buttonLeftStickUp.enabled = True
 gestureTracker.buttonLeftStickUp.action = KeyPress(Key.NumberPad5)
